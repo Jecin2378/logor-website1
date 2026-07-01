@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #FF6A00;
+  --color-orange-brand: #FF6A00;
+  --color-charcoal: #0A0A0A;
+  --color-charcoal-light: #161616;
+  --color-charcoal-lighter: #242424;
+  --color-charcoal-deep: #050505;
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --background: #0A0A0A;
+  --foreground: #F5F5F5;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+/* ========================================
+   ENHANCED GLASSMORPHISM SYSTEM
+   ======================================== */
+
+/* Primary glass panel - frosted translucent background */
+.glass-panel {
+  background: rgba(22, 22, 22, 0.35);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Glass card with luxury hover effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 106, 0, 0.03),
+    transparent
+  );
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+
+.glass-card:hover::before {
+  left: 100%;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 106, 0, 0.35);
+  box-shadow:
+    0 16px 48px -12px rgba(255, 106, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 106, 0, 0.1);
+  transform: translateY(-6px);
+}
+
+/* Orange-tinted glass card */
+.glass-card-orange {
+  background: rgba(255, 106, 0, 0.03);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid rgba(255, 106, 0, 0.12);
+  box-shadow:
+    0 4px 24px rgba(255, 106, 0, 0.05),
+    inset 0 1px 0 rgba(255, 106, 0, 0.06);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card-orange::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 106, 0, 0.06),
+    transparent
+  );
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+
+.glass-card-orange:hover::before {
+  left: 100%;
+}
+
+.glass-card-orange:hover {
+  background: rgba(255, 106, 0, 0.07);
+  border-color: rgba(255, 106, 0, 0.5);
+  box-shadow:
+    0 16px 48px -12px rgba(255, 106, 0, 0.25),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 106, 0, 0.15);
+  transform: translateY(-6px);
+}
+
+/* Glass navbar - ultra subtle */
+.glass-navbar {
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(30px) saturate(1.6);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Glass input fields */
+.glass-input {
+  background: rgba(10, 10, 10, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  border-color: rgba(255, 106, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.1);
+}
+
+/* ========================================
+   GLOW EFFECTS
+   ======================================== */
+.orange-glow {
+  box-shadow:
+    0 0 60px -10px rgba(255, 106, 0, 0.2),
+    0 0 20px -5px rgba(255, 106, 0, 0.1);
+}
+
+.orange-glow-intense {
+  box-shadow:
+    0 0 80px -10px rgba(255, 106, 0, 0.3),
+    0 0 30px -5px rgba(255, 106, 0, 0.15);
+}
+
+/* ========================================
+   TEXT GRADIENTS
+   ======================================== */
+.orange-text-gradient {
+  background: linear-gradient(135deg, #FFF 30%, #FF6A00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.orange-brand-gradient {
+  background: linear-gradient(135deg, #FF6A00 0%, #FF9E59 100%);
+}
+
+.luxury-text-gradient {
+  background: linear-gradient(135deg, #FFD700 0%, #FF6A00 50%, #FF4500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ========================================
+   LUXURY ANIMATIONS
+   ======================================== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 106, 0, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(255, 106, 0, 0.3); }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 25%,
+    rgba(255, 106, 0, 0.08) 50%,
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 106, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 106, 0, 0.5);
+}
+
+/* ========================================
+   SECTION GLASS WRAPPER
+   ======================================== */
+.section-glass {
+  position: relative;
+  background: transparent;
+}
+
+.section-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  pointer-events: none;
+}
