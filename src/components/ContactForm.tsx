@@ -76,11 +76,11 @@ export default function ContactForm() {
           email: formData.email?.trim() || null,
           phone: formData.phone.trim(),
           whatsapp: formData.whatsapp?.trim() || null,
-          gender: (formData.gender || "Male").toLowerCase() as any,
+          gender: (formData.gender || "Male").toLowerCase() as "male" | "female" | "other",
           category: formData.category?.trim() || null,
           address: formData.address?.trim() || null,
-          gbp_available: (formData.gbpAvailable || "No").toLowerCase() as any,
-          website_available: (formData.websiteAvailable || "No").toLowerCase() as any,
+          gbp_available: (formData.gbpAvailable || "No").toLowerCase() as "yes" | "no" | "unsure",
+          website_available: (formData.websiteAvailable || "No").toLowerCase() as "yes" | "no",
           instagram: formData.instagram?.trim() || null,
           facebook: formData.facebook?.trim() || null,
           services_interested: formData.servicesInterested || [],
@@ -112,7 +112,7 @@ export default function ContactForm() {
         servicesInterested: [],
         message: "",
       });
-    } catch (err: any) {
+    } catch (err) {
       console.error("ContactForm submission error:", err);
       setErrorMessage("Network error. Please check your connection and try again.");
     } finally {
