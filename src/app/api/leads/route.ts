@@ -39,9 +39,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<LeadInser
       request.headers.get("x-real-ip") ||
       null;
 
-    const { data, error } = await supabase
+    const leadId = crypto.randomUUID();
+
+    const { error } = await supabase
       .from("leads")
       .insert({
+        id: leadId,
         full_name: body.fullName.trim(),
         business_name: body.businessName.trim(),
         email: body.email?.trim() || null,
@@ -57,9 +60,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<LeadInser
         services_interested: body.servicesInterested || [],
         message: body.message?.trim() || null,
         source_ip: sourceIp,
-      })
-      .select("id")
-      .single();
+      });
 
     if (error) {
       console.error("Supabase insert error:", error);
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<LeadInser
       {
         success: true,
         message: "Your consultation has been booked successfully!",
-        id: data.id,
+        id: leadId,
       },
       { status: 201 }
     );
