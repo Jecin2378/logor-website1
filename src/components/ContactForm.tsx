@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Send, CheckCircle, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { LeadFormData, LeadInsertResponse } from "@/types/lead";
 
 const servicesList = [
   "NFC Business Cards",
@@ -16,7 +17,7 @@ const servicesList = [
 ];
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LeadFormData>({
     fullName: "",
     businessName: "",
     email: "",
@@ -29,12 +30,12 @@ export default function ContactForm() {
     websiteAvailable: "No",
     instagram: "",
     facebook: "",
-    servicesInterested: [] as string[],
+    servicesInterested: [],
     message: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedData, setSubmittedData] = useState<any>(null);
+  const [submittedData, setSubmittedData] = useState<LeadFormData | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -51,11 +52,11 @@ export default function ContactForm() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
-    // Simple validation
+    // Client-side validation
     if (!formData.fullName || !formData.businessName || !formData.phone) {
       setErrorMessage("Please fill in all required fields: Name, Business Name, and Phone Number.");
       return;
@@ -63,12 +64,23 @@ export default function ContactForm() {
 
     setIsSubmitting(true);
 
-    // Mock network call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result: LeadInsertResponse = await response.json();
+
+      if (!response.ok || !result.success) {
+        setErrorMessage(result.message || "Something went wrong. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Success — show confirmation overlay
       setSubmittedData(formData);
-      console.log("Logor Lead Submitted:", formData);
-      // Reset form
       setFormData({
         fullName: "",
         businessName: "",
@@ -85,7 +97,11 @@ export default function ContactForm() {
         servicesInterested: [],
         message: "",
       });
-    }, 1500);
+    } catch {
+      setErrorMessage("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputClasses = "w-full px-4 py-3 rounded-xl bg-white/[0.03] backdrop-blur-sm border border-white/6 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#FF6A00]/50 focus:shadow-[0_0_15px_rgba(255,106,0,0.08)] transition-all duration-300";
