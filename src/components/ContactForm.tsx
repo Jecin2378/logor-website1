@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { Send, CheckCircle, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { LeadFormData, LeadInsertResponse } from "@/types/lead";
+import type { LeadFormData } from "@/types/lead";
+import { createClient } from "@/utils/supabase/client";
 
 const servicesList = [
   "NFC Business Cards",
@@ -65,16 +66,30 @@ export default function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const supabase = createClient();
 
-      const result: LeadInsertResponse = await response.json();
+      const { error } = await supabase
+        .from("leads")
+        .insert({
+          full_name: formData.fullName.trim(),
+          business_name: formData.businessName.trim(),
+          email: formData.email?.trim() || null,
+          phone: formData.phone.trim(),
+          whatsapp: formData.whatsapp?.trim() || null,
+          gender: (formData.gender || "Male").toLowerCase() as any,
+          category: formData.category?.trim() || null,
+          address: formData.address?.trim() || null,
+          gbp_available: (formData.gbpAvailable || "No").toLowerCase() as any,
+          website_available: (formData.websiteAvailable || "No").toLowerCase() as any,
+          instagram: formData.instagram?.trim() || null,
+          facebook: formData.facebook?.trim() || null,
+          services_interested: formData.servicesInterested || [],
+          message: formData.message?.trim() || null,
+        });
 
-      if (!response.ok || !result.success) {
-        setErrorMessage(result.message || "Something went wrong. Please try again.");
+      if (error) {
+        console.error("Supabase insert error:", error);
+        setErrorMessage(error.message || "Failed to save your inquiry. Please try again.");
         setIsSubmitting(false);
         return;
       }
@@ -97,7 +112,8 @@ export default function ContactForm() {
         servicesInterested: [],
         message: "",
       });
-    } catch {
+    } catch (err: any) {
+      console.error("ContactForm submission error:", err);
       setErrorMessage("Network error. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
