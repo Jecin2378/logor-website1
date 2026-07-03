@@ -116,6 +116,14 @@ CREATE POLICY "leads_anon_insert"
   TO anon
   WITH CHECK (true);
 
+-- Allow authenticated users to also submit the contact form
+DROP POLICY IF EXISTS "leads_auth_insert" ON public.leads;
+CREATE POLICY "leads_auth_insert"
+  ON public.leads
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
 -- Authenticated users (admin): full read access
 DROP POLICY IF EXISTS "leads_auth_select" ON public.leads;
 CREATE POLICY "leads_auth_select"
