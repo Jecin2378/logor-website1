@@ -39,6 +39,12 @@ export default function ContactForm() {
   const [submittedData, setSubmittedData] = useState<LeadFormData | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const whatsappUrl = submittedData
+    ? `https://wa.me/917305313682?text=${encodeURIComponent(
+        `Hi Logor team! I just booked a free consultation.\n\nName: ${submittedData.fullName}\nBusiness: ${submittedData.businessName}\nServices: ${submittedData.servicesInterested.join(", ") || "General Inquiry"}`
+      )}`
+    : "";
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -446,12 +452,23 @@ export default function ContactForm() {
                     Our team will contact you on WhatsApp (+91 7305313682) shortly.
                   </p>
 
-                  <button
-                    onClick={() => setSubmittedData(null)}
-                    className="w-full py-3 rounded-xl bg-[#FF6A00] text-black font-bold text-sm transition-all hover:bg-[#FF8833] hover:shadow-[0_0_15px_rgba(255,106,0,0.2)]"
-                  >
-                    Submit Another Inquiry
-                  </button>
+                  <div className="flex flex-col gap-3">
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all hover:shadow-[0_0_15px_rgba(34,197,94,0.25)]"
+                    >
+                      Confirm on WhatsApp
+                    </a>
+
+                    <button
+                      onClick={() => setSubmittedData(null)}
+                      className="w-full py-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/5 text-gray-400 hover:text-white font-semibold text-sm transition-all"
+                    >
+                      Submit Another Inquiry
+                    </button>
+                  </div>
                 </motion.div>
               </div>
             )}
