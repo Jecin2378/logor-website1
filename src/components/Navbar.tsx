@@ -67,8 +67,14 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Action Button */}
+          {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-4">
+            <a
+              href="/portal/"
+              className="text-xs font-semibold text-gray-300 hover:text-white px-4 py-2 bg-white/[0.02] border border-white/5 hover:border-white/15 rounded-full transition-all duration-300 backdrop-blur-sm"
+            >
+              Client Portal
+            </a>
             <a
               href="#contact"
               className="px-5 py-2.5 text-xs font-semibold text-white bg-transparent border border-white/10 hover:border-[#FF6A00] rounded-full transition-all duration-300 hover:bg-[#FF6A00]/10 hover:shadow-[0_0_20px_rgba(255,106,0,0.15)] backdrop-blur-sm"
@@ -87,7 +93,7 @@ export default function Navbar() {
           </button>
         </div>
       </header>
-
+ 
       {/* Mobile Drawer */}
       <AnimatePresence>
         {isOpen && (
@@ -109,14 +115,23 @@ export default function Navbar() {
                   {item.name}
                 </a>
               ))}
-              <a
-                href="#contact"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 py-3 px-4 bg-[#FF6A00] text-black font-semibold rounded-xl text-center shadow-lg transition-transform duration-200 hover:scale-[1.02]"
-              >
-                <PhoneCall className="w-4 h-4" />
-                Book Free Consultation
-              </a>
+              <div className="flex flex-col gap-3 mt-2">
+                <a
+                  href="/portal/"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center gap-2 py-3 px-4 bg-white/5 border border-white/10 text-white font-semibold rounded-xl text-center transition-transform duration-200 hover:scale-[1.02]"
+                >
+                  Client Portal
+                </a>
+                <a
+                  href="#contact"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center gap-2 py-3 px-4 bg-[#FF6A00] text-black font-semibold rounded-xl text-center shadow-lg transition-transform duration-200 hover:scale-[1.02]"
+                >
+                  <PhoneCall className="w-4 h-4" />
+                  Book Free Consultation
+                </a>
+              </div>
             </nav>
           </motion.div>
         )}
