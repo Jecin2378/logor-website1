@@ -403,48 +403,57 @@ export default function ContactForm() {
 
           </form>
 
-          {/* Success Overlay */}
+          {/* Success Overlay Modal */}
           <AnimatePresence>
             {submittedData && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 glass-panel flex flex-col items-center justify-center p-6 text-center z-20"
-              >
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                {/* Backdrop */}
                 <motion.div
-                  initial={{ scale: 0.8, y: 20 }}
-                  animate={{ scale: 1, y: 0 }}
-                  exit={{ scale: 0.8, y: 20 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSubmittedData(null)}
+                  className="absolute inset-0 bg-black/85 backdrop-blur-md"
+                />
+
+                {/* Modal Card */}
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.9, opacity: 0, y: 20 }}
                   transition={{ type: "spring", damping: 15 }}
-                  className="space-y-6 max-w-md"
+                  className="relative max-w-md w-full glass-panel border border-white/10 rounded-3xl p-8 sm:p-10 text-center shadow-2xl z-10 space-y-6"
                 >
                   <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400 mx-auto backdrop-blur-sm">
                     <CheckCircle className="w-12 h-12" />
                   </div>
+                  
                   <div className="space-y-2">
                     <h4 className="text-2xl font-bold text-white">Consultation Booked!</h4>
                     <p className="text-sm text-gray-400">
                       Thank you, <span className="text-white font-semibold">{submittedData.fullName}</span>. We have successfully registered <span className="text-white font-semibold">{submittedData.businessName}</span> for digital transformation.
                     </p>
                   </div>
+
                   <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-xs text-gray-400 space-y-1 text-left max-w-sm mx-auto font-mono backdrop-blur-sm">
                     <p><strong className="text-gray-300">Name:</strong> {submittedData.fullName}</p>
                     <p><strong className="text-gray-300">Phone:</strong> {submittedData.phone}</p>
                     {submittedData.whatsapp && <p><strong className="text-gray-300">WhatsApp:</strong> {submittedData.whatsapp}</p>}
                     <p><strong className="text-gray-300">Services:</strong> {submittedData.servicesInterested.join(", ") || "General Inquiry"}</p>
                   </div>
+
                   <p className="text-xs text-orange-400 font-medium">
                     Our team will contact you on WhatsApp (+91 7305313682) shortly.
                   </p>
+
                   <button
                     onClick={() => setSubmittedData(null)}
-                    className="px-6 py-2 rounded-xl bg-[#FF6A00] text-black font-semibold text-sm transition-colors hover:bg-[#FF8833]"
+                    className="w-full py-3 rounded-xl bg-[#FF6A00] text-black font-bold text-sm transition-all hover:bg-[#FF8833] hover:shadow-[0_0_15px_rgba(255,106,0,0.2)]"
                   >
                     Submit Another Inquiry
                   </button>
                 </motion.div>
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
 
