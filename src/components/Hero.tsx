@@ -8,6 +8,40 @@ import { motion } from "framer-motion";
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
   const [category, setCategory] = useState("TAP TO CONNECT");
+  const [cardColor, setCardColor] = useState<"black" | "gold" | "blue">("black");
+
+  // Style configurations for each theme
+  const themes = {
+    black: {
+      background: "linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%)",
+      border: "border-white/10",
+      accent: "text-[#FF6A00]",
+      accentBg: "bg-[#FF6A00]/10",
+      accentBorder: "border-[#FF6A00]/20",
+      badgeGradient: "from-orange-500/20 via-yellow-500/10",
+      iconGlow: "drop-shadow-[0_0_8px_rgba(255,106,0,0.5)]"
+    },
+    gold: {
+      background: "linear-gradient(135deg, rgba(30, 24, 10, 0.95) 0%, rgba(15, 12, 5, 0.98) 100%)",
+      border: "border-amber-500/20",
+      accent: "text-amber-400",
+      accentBg: "bg-amber-400/10",
+      accentBorder: "border-amber-400/20",
+      badgeGradient: "from-amber-500/30 via-yellow-500/20",
+      iconGlow: "drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+    },
+    blue: {
+      background: "linear-gradient(135deg, rgba(10, 15, 30, 0.95) 0%, rgba(5, 8, 15, 0.98) 100%)",
+      border: "border-blue-500/20",
+      accent: "text-blue-400",
+      accentBg: "bg-blue-400/10",
+      accentBorder: "border-blue-400/20",
+      badgeGradient: "from-blue-500/30 via-indigo-500/20",
+      iconGlow: "drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"
+    }
+  };
+
+  const currentTheme = themes[cardColor];
   return (
     <section
       id="home"
@@ -113,9 +147,9 @@ export default function Hero() {
             animate={{ opacity: 1, scale: 1, rotate: 2 }}
             transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
             style={{
-              background: "linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%)",
+              background: currentTheme.background,
             }}
-            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl animate-pulse-glow cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+            className={`relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border ${currentTheme.border} glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl animate-pulse-glow cursor-pointer hover:scale-[1.02] transition-transform duration-300`}
           >
             {/* Shimmer overlay */}
             <div className="absolute inset-0 animate-shimmer pointer-events-none" />
@@ -131,12 +165,12 @@ export default function Hero() {
                   alt="Logor"
                   width={110}
                   height={38}
-                  className="h-8 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,106,0,0.5)]"
+                  className={`h-8 w-auto object-contain transition-all duration-500 ${currentTheme.iconGlow}`}
                 />
               </div>
               
               {/* Wireless Wave Icon (Contactless NFC symbol) */}
-              <div className="text-[#FF6A00]/70 group-hover:text-[#FF6A00] transition-colors duration-300">
+              <div className={`transition-colors duration-500 ${currentTheme.accent}`}>
                 <svg className="w-8 h-8 transform rotate-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
@@ -147,9 +181,9 @@ export default function Hero() {
 
             {/* NFC Contact Center Tap Point */}
             <div className="flex justify-center items-center my-auto" style={{ transform: "translateZ(40px)" }}>
-              <div className="relative w-16 h-16 rounded-full border border-dashed border-[#FF6A00]/20 flex items-center justify-center group-hover:border-[#FF6A00]/50 transition-all duration-500">
-                <div className="w-10 h-10 rounded-full bg-[#FF6A00]/5 border border-[#FF6A00]/30 flex items-center justify-center shadow-[0_0_15px_rgba(255,106,0,0.2)]">
-                  <svg className="w-5 h-5 text-[#FF6A00]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <div className={`relative w-16 h-16 rounded-full border border-dashed ${currentTheme.accentBorder} flex items-center justify-center transition-all duration-500`}>
+                <div className={`w-10 h-10 rounded-full ${currentTheme.accentBg} border ${currentTheme.accentBorder} flex items-center justify-center transition-all duration-500`}>
+                  <svg className={`w-5 h-5 transition-colors duration-500 ${currentTheme.accent}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
@@ -160,11 +194,11 @@ export default function Hero() {
             <div className="flex justify-between items-end mt-auto" style={{ transform: "translateZ(30px)" }}>
               <div>
                 <p className="text-sm text-white/90 tracking-widest font-mono uppercase font-bold truncate max-w-[240px]">{businessName}</p>
-                <p className="text-[10px] text-[#FF6A00] tracking-wider font-semibold uppercase mt-0.5">{category}</p>
+                <p className={`text-[10px] tracking-wider font-semibold uppercase mt-0.5 transition-colors duration-500 ${currentTheme.accent}`}>{category}</p>
               </div>
               
               {/* NFC circular badge */}
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-500/20 via-yellow-500/10 to-transparent border border-white/10 flex items-center justify-center text-[8px] text-white/40 font-mono tracking-tighter">
+              <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${currentTheme.badgeGradient} to-transparent border border-white/10 flex items-center justify-center text-[8px] text-white/40 font-mono tracking-tighter transition-all duration-500`}>
                 NFC
               </div>
             </div>
@@ -175,7 +209,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="w-full max-w-sm p-4 rounded-xl border border-white/5 bg-white/2 backdrop-blur-md flex flex-col gap-3 relative z-10"
+            className="w-full max-w-sm p-4 rounded-xl border border-white/5 bg-white/2 backdrop-blur-md flex flex-col gap-4 relative z-10"
           >
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-[#FF6A00]" />
@@ -203,6 +237,43 @@ export default function Hero() {
                   onChange={(e) => setCategory(e.target.value.trim() === "" ? "TAP TO CONNECT" : e.target.value.toUpperCase())}
                   className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-white text-xs placeholder-gray-600 focus:outline-none focus:border-[#FF6A00]/50 focus:bg-white/10 transition-all font-mono font-semibold"
                 />
+              </div>
+            </div>
+
+            {/* Color Swapper Controls */}
+            <div>
+              <label className="block text-[10px] text-gray-500 uppercase tracking-wider mb-1.5 font-semibold">Card Finish / Theme</label>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCardColor("black")}
+                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                    cardColor === "black"
+                      ? "bg-white/10 text-white border-white/20 shadow-md"
+                      : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
+                  }`}
+                >
+                  Matte Black
+                </button>
+                <button
+                  onClick={() => setCardColor("gold")}
+                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                    cardColor === "gold"
+                      ? "bg-amber-500/20 text-amber-300 border-amber-400/30 shadow-md"
+                      : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
+                  }`}
+                >
+                  Luxury Gold
+                </button>
+                <button
+                  onClick={() => setCardColor("blue")}
+                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                    cardColor === "blue"
+                      ? "bg-blue-400/20 text-blue-300 border-blue-400/30 shadow-md"
+                      : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
+                  }`}
+                >
+                  Royal Blue
+                </button>
               </div>
             </div>
           </motion.div>
