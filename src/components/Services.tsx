@@ -114,18 +114,23 @@ export default function Services() {
                 key={service.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -6, scale: 1.02 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="glass-card rounded-2xl p-6 flex flex-col justify-between"
+                className="glass-panel border border-white/5 hover:border-[#FF6A00]/30 hover:shadow-[0_10px_30px_rgba(255,106,0,0.1)] rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 relative overflow-hidden"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.03) 100%)",
+                  backdropFilter: "blur(16px)"
+                }}
               >
                 <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#FF6A00]/10 flex items-center justify-center border border-[#FF6A00]/20 text-[#FF6A00] mb-6 backdrop-blur-sm">
+                  <div className="w-12 h-12 rounded-xl bg-[#FF6A00]/10 flex items-center justify-center border border-[#FF6A00]/20 text-[#FF6A00] mb-6 backdrop-blur-sm group-hover:bg-[#FF6A00]/20 group-hover:border-[#FF6A00]/40 transition-colors">
                     <IconComponent className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-bold text-white group-hover:text-[#FF6A00] transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
+                  <p className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
                     {service.description}
                   </p>
                 </div>

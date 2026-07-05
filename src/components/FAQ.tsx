@@ -69,15 +69,25 @@ export default function FAQ() {
             return (
               <div
                 key={faq.question}
-                className={`rounded-xl border overflow-hidden transition-all duration-300 backdrop-blur-sm ${
+                className={`rounded-xl border overflow-hidden transition-all duration-300 backdrop-blur-sm relative ${
                   isOpen
-                    ? "border-[#FF6A00]/20 bg-white/[0.03]"
-                    : "border-white/5 bg-white/[0.01]"
+                    ? "border-[#FF6A00]/30 bg-white/[0.03] shadow-[0_4px_20px_rgba(255,106,0,0.05)]"
+                    : "border-white/5 bg-white/[0.01] hover:border-white/10"
                 }`}
               >
+                {/* Active Indicator Bar */}
+                {isOpen && (
+                  <motion.div
+                    layoutId="faq-indicator"
+                    className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#FF6A00]"
+                    transition={{ duration: 0.2 }}
+                  />
+                )}
                 <button
                   onClick={() => toggleFAQ(index)}
-                  className="w-full flex items-center justify-between p-6 text-left text-white font-semibold text-sm sm:text-base hover:bg-white/5 transition-colors duration-200"
+                  className={`w-full flex items-center justify-between p-6 text-left font-semibold text-sm sm:text-base hover:bg-white/5 transition-all duration-200 ${
+                    isOpen ? "text-[#FF6A00]" : "text-white"
+                  }`}
                 >
                   <span>{faq.question}</span>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ml-4 transition-all duration-300 ${

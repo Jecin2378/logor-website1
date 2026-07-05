@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Hero() {
+  const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
+  const [category, setCategory] = useState("TAP TO CONNECT");
   return (
     <section
       id="home"
@@ -105,7 +107,7 @@ export default function Hero() {
         </div>
 
         {/* Right Side Visual (Glowing Luxury Glassmorphism NFC Card) */}
-        <div className="lg:col-span-5 flex items-center justify-center relative">
+        <div className="lg:col-span-5 flex flex-col items-center justify-center relative gap-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
             animate={{ opacity: 1, scale: 1, rotate: 2 }}
@@ -154,8 +156,8 @@ export default function Hero() {
             {/* Card Holder Name */}
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-xs text-gray-400 tracking-wider font-mono">YOUR BUSINESS NAME</p>
-                <p className="text-[10px] text-gray-600 tracking-widest font-mono uppercase mt-1">TAP TO CONNECT</p>
+                <p className="text-xs text-gray-400 tracking-wider font-mono uppercase truncate max-w-[200px]">{businessName}</p>
+                <p className="text-[10px] text-gray-600 tracking-widest font-mono uppercase mt-1 truncate max-w-[200px]">{category}</p>
               </div>
               
               {/* NFC Sign */}
@@ -164,6 +166,43 @@ export default function Hero() {
                 <div className="w-[2px] h-2 bg-gray-500 rounded-full" />
                 <div className="w-[2px] h-3 bg-gray-500 rounded-full" />
                 <div className="w-[2px] h-4 bg-[#FF6A00] rounded-full" />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Real-time Customizer Panel */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="w-full max-w-sm p-4 rounded-xl border border-white/5 bg-white/2 backdrop-blur-md flex flex-col gap-3 relative z-10"
+          >
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-[#FF6A00]" />
+              <span>Interactive Card Preview</span>
+            </p>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <label className="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-semibold">Business Name</label>
+                <input
+                  type="text"
+                  placeholder="Enter business name..."
+                  maxLength={24}
+                  value={businessName === "YOUR BUSINESS NAME" ? "" : businessName}
+                  onChange={(e) => setBusinessName(e.target.value.trim() === "" ? "YOUR BUSINESS NAME" : e.target.value)}
+                  className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-white text-xs placeholder-gray-600 focus:outline-none focus:border-[#FF6A00]/50 focus:bg-white/10 transition-all font-semibold"
+                />
+              </div>
+              <div className="w-[120px]">
+                <label className="block text-[10px] text-gray-500 uppercase tracking-wider mb-1 font-semibold">Subtext</label>
+                <input
+                  type="text"
+                  placeholder="Tap to connect..."
+                  maxLength={18}
+                  value={category === "TAP TO CONNECT" ? "" : category}
+                  onChange={(e) => setCategory(e.target.value.trim() === "" ? "TAP TO CONNECT" : e.target.value.toUpperCase())}
+                  className="w-full px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-white text-xs placeholder-gray-600 focus:outline-none focus:border-[#FF6A00]/50 focus:bg-white/10 transition-all font-mono font-semibold"
+                />
               </div>
             </div>
           </motion.div>
