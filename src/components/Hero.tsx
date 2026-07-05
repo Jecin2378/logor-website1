@@ -3,39 +3,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
   const [category, setCategory] = useState("TAP TO CONNECT");
-
-  // Dynamic 3D tilt motion values
-  const x = useMotionValue(200);
-  const y = useMotionValue(200);
-
-  // Wrap the motion values in springs for ultra-smooth organic transition physics
-  const springConfig = { damping: 25, stiffness: 250, mass: 0.5 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
-
-  const rotateX = useTransform(springY, [0, 400], [20, -20]);
-  const rotateY = useTransform(springX, [0, 400], [-20, 20]);
-
-  function handleMouse(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-
-    x.set((mouseX / width) * 400);
-    y.set((mouseY / height) * 400);
-  }
-
-  function handleMouseLeave() {
-    x.set(200);
-    y.set(200);
-  }
   return (
     <section
       id="home"
@@ -135,19 +107,15 @@ export default function Hero() {
         </div>
 
         {/* Right Side Visual (Glowing Luxury Glassmorphism NFC Card) */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center relative gap-8" style={{ perspective: 1200 }}>
+        <div className="lg:col-span-5 flex flex-col items-center justify-center relative gap-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
-            animate={{ scale: 1 }}
+            animate={{ opacity: 1, scale: 1, rotate: 2 }}
+            transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
             style={{
-              rotateX: rotateX,
-              rotateY: rotateY,
-              transformStyle: "preserve-3d",
               background: "linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%)",
             }}
-            onMouseMove={handleMouse}
-            onMouseLeave={handleMouseLeave}
-            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl cursor-pointer"
+            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl animate-pulse-glow cursor-pointer hover:scale-[1.02] transition-transform duration-300"
           >
             {/* Shimmer overlay */}
             <div className="absolute inset-0 animate-shimmer pointer-events-none" />
