@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
@@ -13,8 +13,13 @@ export default function Hero() {
   const x = useMotionValue(200);
   const y = useMotionValue(200);
 
-  const rotateX = useTransform(y, [0, 400], [15, -15]);
-  const rotateY = useTransform(x, [0, 400], [-15, 15]);
+  // Wrap the motion values in springs for ultra-smooth organic transition physics
+  const springConfig = { damping: 25, stiffness: 250, mass: 0.5 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+
+  const rotateX = useTransform(springY, [0, 400], [20, -20]);
+  const rotateY = useTransform(springX, [0, 400], [-20, 20]);
 
   function handleMouse(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -130,7 +135,7 @@ export default function Hero() {
         </div>
 
         {/* Right Side Visual (Glowing Luxury Glassmorphism NFC Card) */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center relative gap-8">
+        <div className="lg:col-span-5 flex flex-col items-center justify-center relative gap-8" style={{ perspective: 1200 }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
             animate={{ scale: 1 }}
@@ -138,11 +143,11 @@ export default function Hero() {
               rotateX: rotateX,
               rotateY: rotateY,
               transformStyle: "preserve-3d",
-              background: "linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(5, 5, 5, 0.95) 100%)",
+              background: "linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%)",
             }}
             onMouseMove={handleMouse}
             onMouseLeave={handleMouseLeave}
-            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl transition-all duration-100 ease-out cursor-pointer"
+            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl cursor-pointer"
           >
             {/* Shimmer overlay */}
             <div className="absolute inset-0 animate-shimmer pointer-events-none" />
