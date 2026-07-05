@@ -3,11 +3,34 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
   const [category, setCategory] = useState("TAP TO CONNECT");
+
+  // Dynamic 3D tilt motion values
+  const x = useMotionValue(200);
+  const y = useMotionValue(200);
+
+  const rotateX = useTransform(y, [0, 400], [15, -15]);
+  const rotateY = useTransform(x, [0, 400], [-15, 15]);
+
+  function handleMouse(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    x.set((mouseX / width) * 400);
+    y.set((mouseY / height) * 400);
+  }
+
+  function handleMouseLeave() {
+    x.set(200);
+    y.set(200);
+  }
   return (
     <section
       id="home"
@@ -110,62 +133,66 @@ export default function Hero() {
         <div className="lg:col-span-5 flex flex-col items-center justify-center relative gap-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 2 }}
-            transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-6 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl animate-pulse-glow"
+            animate={{ scale: 1 }}
             style={{
-              background: "linear-gradient(135deg, rgba(22, 22, 22, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%)",
+              rotateX: rotateX,
+              rotateY: rotateY,
+              transformStyle: "preserve-3d",
+              background: "linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(5, 5, 5, 0.95) 100%)",
             }}
+            onMouseMove={handleMouse}
+            onMouseLeave={handleMouseLeave}
+            className="relative w-80 sm:w-96 aspect-[1.586/1] rounded-2xl p-8 border border-white/10 glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl transition-all duration-100 ease-out cursor-pointer"
           >
             {/* Shimmer overlay */}
             <div className="absolute inset-0 animate-shimmer pointer-events-none" />
 
             {/* Absolute vector details */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-[#FF6A00]/20 to-transparent rounded-bl-full pointer-events-none transition-all duration-500 group-hover:scale-110" />
-            
-            {/* Glowing NFC Ring */}
-            <div className="absolute top-6 right-6 w-12 h-12 rounded-full border border-[#FF6A00]/30 flex items-center justify-center group-hover:border-[#FF6A00]/60 transition-all duration-300">
-              <div className="w-8 h-8 rounded-full border border-[#FF6A00]/50 flex items-center justify-center animate-ping absolute" />
-              <svg className="w-6 h-6 text-[#FF6A00]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
 
-            {/* Brand Header with Logo */}
-            <div>
-              <div className="flex items-center gap-2 mb-1">
+            {/* Brand Header with Logo and Contactless waves */}
+            <div className="flex justify-between items-start" style={{ transform: "translateZ(30px)" }}>
+              <div className="flex items-center gap-2">
                 <Image
                   src="/logor-logo.png"
                   alt="Logor"
-                  width={80}
-                  height={28}
-                  className="h-6 w-auto object-contain drop-shadow-[0_0_6px_rgba(255,106,0,0.4)]"
+                  width={110}
+                  height={38}
+                  className="h-8 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,106,0,0.5)]"
                 />
-                <span className="text-xs font-bold tracking-wider text-gray-400">SMART</span>
               </div>
-              <p className="text-[10px] text-gray-500 uppercase tracking-widest">Digital Business Card</p>
+              
+              {/* Wireless Wave Icon (Contactless NFC symbol) */}
+              <div className="text-[#FF6A00]/70 group-hover:text-[#FF6A00] transition-colors duration-300">
+                <svg className="w-8 h-8 transform rotate-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a0.5 0.5 0 1 1 0-1 0.5 0 0 1 0 1z" />
+                </svg>
+              </div>
             </div>
 
-            {/* Smart Card Chip */}
-            <div className="w-10 h-8 rounded bg-gradient-to-r from-amber-400 to-amber-600 opacity-80 border border-amber-300/40 relative">
-              <div className="absolute inset-1 border border-black/10 rounded-sm" />
-              <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-black/10" />
-              <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-black/10" />
+            {/* NFC Contact Center Tap Point */}
+            <div className="flex justify-center items-center my-auto" style={{ transform: "translateZ(40px)" }}>
+              <div className="relative w-16 h-16 rounded-full border border-dashed border-[#FF6A00]/20 flex items-center justify-center group-hover:border-[#FF6A00]/50 transition-all duration-500">
+                <div className="w-10 h-10 rounded-full bg-[#FF6A00]/5 border border-[#FF6A00]/30 flex items-center justify-center shadow-[0_0_15px_rgba(255,106,0,0.2)]">
+                  <svg className="w-5 h-5 text-[#FF6A00]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             {/* Card Holder Name */}
-            <div className="flex items-end justify-between">
+            <div className="flex justify-between items-end mt-auto" style={{ transform: "translateZ(30px)" }}>
               <div>
-                <p className="text-xs text-gray-400 tracking-wider font-mono uppercase truncate max-w-[200px]">{businessName}</p>
-                <p className="text-[10px] text-gray-600 tracking-widest font-mono uppercase mt-1 truncate max-w-[200px]">{category}</p>
+                <p className="text-sm text-white/90 tracking-widest font-mono uppercase font-bold truncate max-w-[240px]">{businessName}</p>
+                <p className="text-[10px] text-[#FF6A00] tracking-wider font-semibold uppercase mt-0.5">{category}</p>
               </div>
               
-              {/* NFC Sign */}
-              <div className="flex gap-0.5 items-end h-4">
-                <div className="w-[2px] h-1 bg-gray-500 rounded-full" />
-                <div className="w-[2px] h-2 bg-gray-500 rounded-full" />
-                <div className="w-[2px] h-3 bg-gray-500 rounded-full" />
-                <div className="w-[2px] h-4 bg-[#FF6A00] rounded-full" />
+              {/* NFC circular badge */}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-500/20 via-yellow-500/10 to-transparent border border-white/10 flex items-center justify-center text-[8px] text-white/40 font-mono tracking-tighter">
+                NFC
               </div>
             </div>
           </motion.div>
