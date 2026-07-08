@@ -47,52 +47,37 @@ export default function Hero() {
         accentBg: "bg-[#FF6A00]/10",
         accentBorder: "border-[#FF6A00]/20",
         badgeGradient: "from-white/10 to-transparent",
-        logoClass: "",
+        logoFilter: "none",
         nfcText: "text-white/40",
         badgeBorder: "border-white/10"
-      },
-      mobile: {
-        accent: "text-[#FF6A00]",
-        accentBg: "bg-[#FF6A00]/10",
-        accentBorder: "border-[#FF6A00]/20"
       }
     },
     gold: {
       card: {
         background: "linear-gradient(135deg, #ECC86A 0%, #C39B3B 50%, #A37C24 100%)", // Rich matte brushed gold look
-        border: "border-[#96741F]/30",
-        text: "text-stone-900", // Engraved dark text
-        accent: "text-stone-900",
-        accentBg: "bg-stone-900/10",
-        accentBorder: "border-stone-900/20",
-        badgeGradient: "from-stone-900/10 to-transparent",
-        logoClass: "brightness-0 opacity-80", // Make logo image black
-        nfcText: "text-stone-900/50",
-        badgeBorder: "border-stone-900/20"
-      },
-      mobile: {
-        accent: "text-amber-400",
-        accentBg: "bg-amber-400/10",
-        accentBorder: "border-amber-400/20"
+        border: "border-stone-950/20",
+        text: "text-stone-950", // Engraved dark text - highest contrast
+        accent: "text-stone-950",
+        accentBg: "bg-stone-950/10",
+        accentBorder: "border-stone-950/20",
+        badgeGradient: "from-stone-950/15 to-transparent",
+        logoFilter: "brightness(0) opacity(0.85)", // Native CSS filter to make logo black
+        nfcText: "text-stone-950/60",
+        badgeBorder: "border-stone-950/20"
       }
     },
     blue: {
       card: {
-        background: "#0A2540", // Solid Matte Dark Royal Blue
-        border: "border-white/10",
+        background: "#0F3D8C", // Solid Matte Dark Royal Blue
+        border: "border-white/20",
         text: "text-white",
-        accent: "text-blue-200",
-        accentBg: "bg-white/10",
-        accentBorder: "border-white/20",
-        badgeGradient: "from-white/10 to-transparent",
-        logoClass: "brightness-0 invert opacity-95", // Make logo image white
-        nfcText: "text-white/40",
-        badgeBorder: "border-white/10"
-      },
-      mobile: {
-        accent: "text-blue-400",
-        accentBg: "bg-blue-400/10",
-        accentBorder: "border-blue-400/20"
+        accent: "text-blue-100",
+        accentBg: "bg-white/15",
+        accentBorder: "border-white/30",
+        badgeGradient: "from-white/15 to-transparent",
+        logoFilter: "brightness(0) invert(1) opacity(0.95)", // Native CSS filter to make logo white
+        nfcText: "text-white/60",
+        badgeBorder: "border-white/20"
       }
     }
   };
@@ -196,8 +181,8 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right Side Visuals (NFC Card Customizer & Mobile Landing Page Preview Side-by-Side) */}
-        <div className="lg:col-span-6 flex flex-col md:flex-row items-center justify-center relative gap-8 w-full">
+        {/* Right Side Visuals (NFC Card Customizer) */}
+        <div className="lg:col-span-6 flex items-center justify-center relative w-full">
           
           {/* Card & Inputs Left Stack */}
           <div className="flex flex-col gap-6 items-center w-full max-w-sm sm:w-auto z-10" style={{ perspective: 1000 }}>
@@ -228,7 +213,8 @@ export default function Hero() {
                     alt="Logor"
                     width={90}
                     height={32}
-                    className={`h-7 w-auto object-contain transition-all duration-500 ${currentTheme.card.logoClass}`}
+                    className="h-7 w-auto object-contain transition-all duration-500"
+                    style={{ filter: currentTheme.card.logoFilter }}
                   />
                 </div>
                 
@@ -341,122 +327,6 @@ export default function Hero() {
               </div>
             </motion.div>
           </div>
-
-          {/* Mobile Profile Mockup Device */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, type: "spring" }}
-            className="w-[250px] h-[440px] rounded-[36px] border-[5px] border-white/15 bg-black/60 relative overflow-hidden shadow-2xl flex flex-col shrink-0 z-10"
-            style={{
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.05)"
-            }}
-          >
-            {/* Speaker Notch */}
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-20 flex items-center justify-center">
-              <div className="w-10 h-1 bg-white/10 rounded-full" />
-            </div>
-
-            {/* Screen Content Wrapper */}
-            <div className="flex-1 p-4 pt-7 flex flex-col justify-between relative z-10 select-none font-sans text-white">
-              {/* Profile Header info */}
-              <div className="flex flex-col items-center text-center mt-2">
-                {/* Brand Logo Avatar Frame */}
-                <div className={`relative w-14 h-14 rounded-full border border-dashed p-1 ${currentTheme.mobile.accentBorder} mb-2 flex items-center justify-center`}>
-                  <div className={`w-10 h-10 rounded-full ${currentTheme.mobile.accentBg} flex items-center justify-center border ${currentTheme.mobile.accentBorder} shadow-[0_0_12px_rgba(255,106,0,0.15)]`}>
-                    <Image
-                      src="/logor-logo.png"
-                      alt="Logor"
-                      width={38}
-                      height={12}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FF6A00] flex items-center justify-center border border-black shadow">
-                    <CheckCircle2 className="w-3 h-3 text-black" fill="currentColor" />
-                  </div>
-                </div>
-
-                {/* Business details dynamically matching customizations */}
-                <h3 className="text-xs font-bold tracking-wide uppercase truncate max-w-[180px] text-white/95">
-                  {businessName}
-                </h3>
-                <p className={`text-[8px] font-semibold uppercase tracking-widest mt-0.5 ${currentTheme.mobile.accent}`}>
-                  {category}
-                </p>
-              </div>
-
-              {/* Action Buttons Link Grid */}
-              <div className="flex flex-col gap-2 my-auto">
-                {/* Save Contact action */}
-                <div className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
-                  <div className={`w-7 h-7 rounded-md ${currentTheme.mobile.accentBg} flex items-center justify-center border ${currentTheme.mobile.accentBorder}`}>
-                    <svg className={`w-3.5 h-3.5 ${currentTheme.mobile.accent}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-9-3.5h.008v.008H3.75V6m0 3h.008v.008H3.75V9zm0 3h.008v.008H3.75v-.008zm0 3h.008v.008H3.75v-.008zm0 3h.008v.008H3.75v-.008z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-white leading-tight">Save Contact</p>
-                    <p className="text-[7px] text-gray-500 font-semibold leading-tight">Download VCF card</p>
-                  </div>
-                </div>
-
-                {/* WhatsApp Chat link */}
-                <div className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
-                  <div className="w-7 h-7 rounded-md bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                    <svg className="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.528 1.977 14.07 1.95 12.01 1.95c-5.438 0-9.865 4.373-9.87 9.802-.001 1.77.463 3.5 1.34 5.016l-.988 3.606 3.69-.974h.015z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-white leading-tight">WhatsApp Me</p>
-                    <p className="text-[7px] text-gray-500 font-semibold leading-tight">Start chat instantly</p>
-                  </div>
-                </div>
-
-                {/* Google review link */}
-                <div className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
-                  <div className="w-7 h-7 rounded-md bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20">
-                    <svg className="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-white leading-tight">Google Reviews</p>
-                    <p className="text-[7px] text-gray-500 font-semibold leading-tight">Rate us & leave feedback</p>
-                  </div>
-                </div>
-
-                {/* Instagram feed link */}
-                <div className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
-                  <div className="w-7 h-7 rounded-md bg-pink-500/10 flex items-center justify-center border border-pink-500/20">
-                    <svg className="w-3.5 h-3.5 text-pink-400" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-white leading-tight">Instagram Feed</p>
-                    <p className="text-[7px] text-gray-500 font-semibold leading-tight">View latest posts</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mock Tap Connection Indicator */}
-              <div className="flex flex-col items-center gap-1.5 mt-auto">
-                <div className="w-12 h-0.5 bg-white/10 rounded-full overflow-hidden">
-                  <div className="w-1/2 h-full bg-[#FF6A00] rounded-full animate-shimmer" />
-                </div>
-                <p className="text-[7px] font-semibold tracking-wider text-gray-600 uppercase">
-                  Powered by Logor NFC
-                </p>
-              </div>
-            </div>
-
-            {/* Glowing accent border bottom */}
-            <div className={`absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-${
-              cardColor === "black" ? "orange" : cardColor === "gold" ? "amber" : "blue"
-            }-500/20 to-transparent`} />
-          </motion.div>
 
           {/* Underlay glow circle */}
           <motion.div
