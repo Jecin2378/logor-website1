@@ -51,7 +51,6 @@ async function sendTelegramAlert(record: WebhookPayload["record"]) {
   const keyboard = {
     inline_keyboard: [
       [
-        { text: "📞 Call Lead", url: `tel:${phone}` },
         { text: "💬 WhatsApp", url: `https://wa.me/${whatsapp ? whatsapp.replace(/\s+/g, '') : phone.replace(/\s+/g, '')}` }
       ],
       [

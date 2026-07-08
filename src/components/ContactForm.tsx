@@ -466,7 +466,7 @@ export default function ContactForm() {
                       onClick={() => setSubmittedData(null)}
                       className="w-full py-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/5 text-gray-400 hover:text-white font-semibold text-sm transition-all"
                     >
-                      Submit Another Inquiry
+                      OK, got it!
                     </button>
                   </div>
                 </motion.div>
