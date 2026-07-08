@@ -40,9 +40,9 @@ SUPABASE_SERVICE_ROLE_KEY=your_actual_service_role_key
 
 ### 2. Supabase Edge Functions Secrets
 You need to set the secrets inside your Supabase project so that the Edge Function trigger can communicate with Telegram.
-Run this command using the Supabase CLI:
+Run this command using the Supabase npm tool:
 ```bash
-supabase secrets set TELEGRAM_BOT_TOKEN=your_bot_token_here TELEGRAM_ADMIN_CHAT_ID=your_chat_id_here
+npx supabase secrets set TELEGRAM_BOT_TOKEN=your_bot_token_here TELEGRAM_ADMIN_CHAT_ID=your_chat_id_here --project-ref ytrfiteoqbxpwctkvfuj
 ```
 *(Alternatively, you can set them in the Supabase Dashboard under **Project Settings** > **Edge Runtime** > **Secrets**).*
 
@@ -60,9 +60,13 @@ https://api.telegram.org/bot<YOUR_TELEGRAM_BOT_TOKEN>/setWebhook?url=https://<YO
 *Replace `<YOUR_TELEGRAM_BOT_TOKEN>` and `<YOUR_DEPLOYED_WEBSITE_DOMAIN>` with your values.*
 
 ### 2. Deploy the Supabase Edge Function
-Run the following command from the project root to deploy the Edge Function:
+Run these commands to log in and deploy the Edge Function to your Supabase project:
 ```bash
-supabase functions deploy send-consultation-email
+# 1. Login to your Supabase account (follow browser prompt)
+npx supabase login
+
+# 2. Deploy the edge function directly using the project reference
+npx supabase functions deploy send-consultation-email --project-ref ytrfiteoqbxpwctkvfuj
 ```
 
 ---
