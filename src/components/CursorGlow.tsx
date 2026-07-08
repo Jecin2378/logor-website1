@@ -11,8 +11,8 @@ export default function CursorGlow() {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // Smooth spring physics for a luxurious trailing glow effect
-  const springConfig = { damping: 30, stiffness: 200, mass: 0.6 };
+  // Ultra-fast, low-latency spring physics that keeps the trailing smooth but snappy
+  const springConfig = { damping: 35, stiffness: 500, mass: 0.15 };
   const glowX = useSpring(mouseX, springConfig);
   const glowY = useSpring(mouseY, springConfig);
 
@@ -82,7 +82,7 @@ export default function CursorGlow() {
           y: glowY,
           translateX: "-50%",
           translateY: "-50%",
-          background: "radial-gradient(circle, rgba(255, 106, 0, 0.08) 0%, rgba(255, 140, 50, 0.02) 50%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255, 106, 0, 0.10) 0%, rgba(255, 140, 50, 0.03) 50%, transparent 70%)",
         }}
         animate={{
           width: isHovered ? 500 : 350,
@@ -90,8 +90,8 @@ export default function CursorGlow() {
         }}
         transition={{
           type: "spring",
-          stiffness: 150,
-          damping: 25,
+          stiffness: 250,
+          damping: 22,
         }}
       />
 
@@ -103,7 +103,7 @@ export default function CursorGlow() {
           y: glowY,
           translateX: "-50%",
           translateY: "-50%",
-          background: "radial-gradient(circle, rgba(255, 106, 0, 0.16) 0%, rgba(255, 106, 0, 0.04) 50%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255, 106, 0, 0.20) 0%, rgba(255, 106, 0, 0.05) 50%, transparent 70%)",
         }}
         animate={{
           width: isHovered ? 140 : 80,
@@ -111,8 +111,8 @@ export default function CursorGlow() {
         }}
         transition={{
           type: "spring",
-          stiffness: 150,
-          damping: 25,
+          stiffness: 250,
+          damping: 22,
         }}
       />
     </div>
