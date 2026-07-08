@@ -61,7 +61,7 @@ export default function Hero() {
         accentBg: "bg-stone-950/10",
         accentBorder: "border-stone-950/20",
         badgeGradient: "from-stone-950/15 to-transparent",
-        logoFilter: "brightness(0) opacity(0.85)", // Native CSS filter to make logo black
+        logoFilter: "none",
         nfcText: "text-stone-950/60",
         badgeBorder: "border-stone-950/20"
       }
@@ -75,7 +75,7 @@ export default function Hero() {
         accentBg: "bg-white/15",
         accentBorder: "border-white/30",
         badgeGradient: "from-white/15 to-transparent",
-        logoFilter: "brightness(0) invert(1) opacity(0.95)", // Native CSS filter to make logo white
+        logoFilter: "none",
         nfcText: "text-white/60",
         badgeBorder: "border-white/20"
       }
