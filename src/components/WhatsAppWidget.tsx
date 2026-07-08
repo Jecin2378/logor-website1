@@ -9,9 +9,9 @@ export default function WhatsAppWidget() {
   const phoneNumber = "917305313682";
   const message = "Hi Logor, I am interested in your digital transformation services. Please share more details.";
   const encodedMessage = encodeURIComponent(message);
-  
+
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-  const telegramBotUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "logor_support_bot";
+  const telegramBotUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "Rangerover6164";
   const telegramUrl = `https://t.me/${telegramBotUsername}`;
 
   return (
@@ -81,7 +81,7 @@ export default function WhatsAppWidget() {
         aria-label="Toggle contact channels"
       >
         <span className="absolute inset-0 rounded-full bg-orange-500/20 blur-md group-hover:bg-orange-500/40 transition-all duration-300" />
-        
+
         {/* Toggle Icon Animating between message & close */}
         <div className="relative w-7 h-7 flex items-center justify-center">
           <motion.svg
