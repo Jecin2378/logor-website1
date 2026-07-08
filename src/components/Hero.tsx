@@ -3,41 +3,97 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
   const [category, setCategory] = useState("TAP TO CONNECT");
   const [cardColor, setCardColor] = useState<"black" | "gold" | "blue">("black");
 
+  // 3D Card Rotation Motion Values
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Smooth springs for rotation
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { stiffness: 300, damping: 25 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { stiffness: 300, damping: 25 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left - width / 2;
+    const mouseY = e.clientY - rect.top - height / 2;
+    
+    // Normalize coordinates between -0.5 and 0.5
+    x.set(mouseX / width);
+    y.set(mouseY / height);
+  };
+
+  const handleMouseLeave = () => {
+    // Reset rotation when cursor leaves the card
+    x.set(0);
+    y.set(0);
+  };
+
   // Style configurations for each theme
   const themes = {
     black: {
-      background: "linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%)",
-      border: "border-white/10",
-      accent: "text-[#FF6A00]",
-      accentBg: "bg-[#FF6A00]/10",
-      accentBorder: "border-[#FF6A00]/20",
-      badgeGradient: "from-orange-500/20 via-yellow-500/10",
-      iconGlow: "drop-shadow-[0_0_8px_rgba(255,106,0,0.5)]"
+      card: {
+        background: "#121212", // Solid Matte Black
+        border: "border-white/10",
+        text: "text-white",
+        accent: "text-[#FF6A00]",
+        accentBg: "bg-[#FF6A00]/10",
+        accentBorder: "border-[#FF6A00]/20",
+        badgeGradient: "from-white/10 to-transparent",
+        logoClass: "",
+        nfcText: "text-white/40",
+        badgeBorder: "border-white/10"
+      },
+      mobile: {
+        accent: "text-[#FF6A00]",
+        accentBg: "bg-[#FF6A00]/10",
+        accentBorder: "border-[#FF6A00]/20"
+      }
     },
     gold: {
-      background: "linear-gradient(135deg, rgba(30, 24, 10, 0.95) 0%, rgba(15, 12, 5, 0.98) 100%)",
-      border: "border-amber-500/20",
-      accent: "text-amber-400",
-      accentBg: "bg-amber-400/10",
-      accentBorder: "border-amber-400/20",
-      badgeGradient: "from-amber-500/30 via-yellow-500/20",
-      iconGlow: "drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+      card: {
+        background: "linear-gradient(135deg, #ECC86A 0%, #C39B3B 50%, #A37C24 100%)", // Rich matte brushed gold look
+        border: "border-[#96741F]/30",
+        text: "text-stone-900", // Engraved dark text
+        accent: "text-stone-900",
+        accentBg: "bg-stone-900/10",
+        accentBorder: "border-stone-900/20",
+        badgeGradient: "from-stone-900/10 to-transparent",
+        logoClass: "brightness-0 opacity-80", // Make logo image black
+        nfcText: "text-stone-900/50",
+        badgeBorder: "border-stone-900/20"
+      },
+      mobile: {
+        accent: "text-amber-400",
+        accentBg: "bg-amber-400/10",
+        accentBorder: "border-amber-400/20"
+      }
     },
     blue: {
-      background: "linear-gradient(135deg, rgba(10, 15, 30, 0.95) 0%, rgba(5, 8, 15, 0.98) 100%)",
-      border: "border-blue-500/20",
-      accent: "text-blue-400",
-      accentBg: "bg-blue-400/10",
-      accentBorder: "border-blue-400/20",
-      badgeGradient: "from-blue-500/30 via-indigo-500/20",
-      iconGlow: "drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"
+      card: {
+        background: "#0A2540", // Solid Matte Dark Royal Blue
+        border: "border-white/10",
+        text: "text-white",
+        accent: "text-blue-200",
+        accentBg: "bg-white/10",
+        accentBorder: "border-white/20",
+        badgeGradient: "from-white/10 to-transparent",
+        logoClass: "brightness-0 invert opacity-95", // Make logo image white
+        nfcText: "text-white/40",
+        badgeBorder: "border-white/10"
+      },
+      mobile: {
+        accent: "text-blue-400",
+        accentBg: "bg-blue-400/10",
+        accentBorder: "border-blue-400/20"
+      }
     }
   };
 
@@ -144,21 +200,25 @@ export default function Hero() {
         <div className="lg:col-span-6 flex flex-col md:flex-row items-center justify-center relative gap-8 w-full">
           
           {/* Card & Inputs Left Stack */}
-          <div className="flex flex-col gap-6 items-center w-full max-w-sm sm:w-auto z-10">
+          <div className="flex flex-col gap-6 items-center w-full max-w-sm sm:w-auto z-10" style={{ perspective: 1000 }}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
-              animate={{ opacity: 1, scale: 1, rotate: 2 }}
-              transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               style={{
-                background: currentTheme.background,
+                background: currentTheme.card.background,
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
               }}
-              className={`relative w-72 sm:w-80 aspect-[1.586/1] rounded-xl p-6 border ${currentTheme.border} glass-panel overflow-hidden orange-glow flex flex-col justify-between group shadow-2xl animate-pulse-glow cursor-pointer hover:scale-[1.02] transition-transform duration-300`}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              className={`relative w-72 sm:w-80 aspect-[1.586/1] rounded-xl p-6 border ${currentTheme.card.border} overflow-hidden flex flex-col justify-between group shadow-2xl cursor-pointer hover:scale-[1.02] transition-shadow duration-300`}
             >
               {/* Shimmer overlay */}
-              <div className="absolute inset-0 animate-shimmer pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               {/* Absolute vector details */}
-              <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-[#FF6A00]/20 to-transparent rounded-bl-full pointer-events-none transition-all duration-500 group-hover:scale-110" />
+              <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full pointer-events-none transition-all duration-500 group-hover:scale-110" />
 
               {/* Brand Header with Logo and Contactless waves */}
               <div className="flex justify-between items-start" style={{ transform: "translateZ(30px)" }}>
@@ -168,12 +228,12 @@ export default function Hero() {
                     alt="Logor"
                     width={90}
                     height={32}
-                    className={`h-7 w-auto object-contain transition-all duration-500 ${currentTheme.iconGlow}`}
+                    className={`h-7 w-auto object-contain transition-all duration-500 ${currentTheme.card.logoClass}`}
                   />
                 </div>
                 
                 {/* Wireless Wave Icon (Contactless NFC symbol) */}
-                <div className={`transition-colors duration-500 ${currentTheme.accent}`}>
+                <div className={`transition-colors duration-500 ${currentTheme.card.accent}`}>
                   <svg className="w-6 h-6 transform rotate-90" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
@@ -184,9 +244,9 @@ export default function Hero() {
 
               {/* NFC Contact Center Tap Point */}
               <div className="flex justify-center items-center my-auto" style={{ transform: "translateZ(40px)" }}>
-                <div className={`relative w-12 h-12 rounded-full border border-dashed ${currentTheme.accentBorder} flex items-center justify-center transition-all duration-500`}>
-                  <div className={`w-8 h-8 rounded-full ${currentTheme.accentBg} border ${currentTheme.accentBorder} flex items-center justify-center transition-all duration-500`}>
-                    <svg className={`w-4 h-4 transition-colors duration-500 ${currentTheme.accent}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <div className={`relative w-12 h-12 rounded-full border border-dashed ${currentTheme.card.accentBorder} flex items-center justify-center transition-all duration-500`}>
+                  <div className={`w-8 h-8 rounded-full ${currentTheme.card.accentBg} border ${currentTheme.card.accentBorder} flex items-center justify-center transition-all duration-500`}>
+                    <svg className={`w-4 h-4 transition-colors duration-500 ${currentTheme.card.accent}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
@@ -196,12 +256,12 @@ export default function Hero() {
               {/* Card Holder Name */}
               <div className="flex justify-between items-end mt-auto" style={{ transform: "translateZ(30px)" }}>
                 <div>
-                  <p className="text-xs text-white/95 tracking-widest font-mono uppercase font-bold truncate max-w-[180px]">{businessName}</p>
-                  <p className={`text-[9px] tracking-wider font-semibold uppercase mt-0.5 transition-colors duration-500 ${currentTheme.accent}`}>{category}</p>
+                  <p className={`text-xs ${currentTheme.card.text} tracking-widest font-mono uppercase font-bold truncate max-w-[180px]`}>{businessName}</p>
+                  <p className={`text-[9px] tracking-wider font-semibold uppercase mt-0.5 transition-colors duration-500 ${currentTheme.card.accent}`}>{category}</p>
                 </div>
                 
                 {/* NFC circular badge */}
-                <div className={`w-7 h-7 rounded-full bg-gradient-to-tr ${currentTheme.badgeGradient} to-transparent border border-white/10 flex items-center justify-center text-[7px] text-white/40 font-mono tracking-tighter transition-all duration-500`}>
+                <div className={`w-7 h-7 rounded-full bg-gradient-to-tr ${currentTheme.card.badgeGradient} to-transparent border ${currentTheme.card.badgeBorder} flex items-center justify-center text-[7px] ${currentTheme.card.nfcText} font-mono tracking-tighter transition-all duration-500`}>
                   NFC
                 </div>
               </div>
@@ -302,8 +362,8 @@ export default function Hero() {
               {/* Profile Header info */}
               <div className="flex flex-col items-center text-center mt-2">
                 {/* Brand Logo Avatar Frame */}
-                <div className={`relative w-14 h-14 rounded-full border border-dashed p-1 ${currentTheme.accentBorder} mb-2 flex items-center justify-center`}>
-                  <div className={`w-10 h-10 rounded-full ${currentTheme.accentBg} flex items-center justify-center border ${currentTheme.accentBorder} shadow-[0_0_12px_rgba(255,106,0,0.15)]`}>
+                <div className={`relative w-14 h-14 rounded-full border border-dashed p-1 ${currentTheme.mobile.accentBorder} mb-2 flex items-center justify-center`}>
+                  <div className={`w-10 h-10 rounded-full ${currentTheme.mobile.accentBg} flex items-center justify-center border ${currentTheme.mobile.accentBorder} shadow-[0_0_12px_rgba(255,106,0,0.15)]`}>
                     <Image
                       src="/logor-logo.png"
                       alt="Logor"
@@ -321,7 +381,7 @@ export default function Hero() {
                 <h3 className="text-xs font-bold tracking-wide uppercase truncate max-w-[180px] text-white/95">
                   {businessName}
                 </h3>
-                <p className={`text-[8px] font-semibold uppercase tracking-widest mt-0.5 ${currentTheme.accent}`}>
+                <p className={`text-[8px] font-semibold uppercase tracking-widest mt-0.5 ${currentTheme.mobile.accent}`}>
                   {category}
                 </p>
               </div>
@@ -330,8 +390,8 @@ export default function Hero() {
               <div className="flex flex-col gap-2 my-auto">
                 {/* Save Contact action */}
                 <div className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
-                  <div className={`w-7 h-7 rounded-md ${currentTheme.accentBg} flex items-center justify-center border ${currentTheme.accentBorder}`}>
-                    <svg className={`w-3.5 h-3.5 ${currentTheme.accent}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <div className={`w-7 h-7 rounded-md ${currentTheme.mobile.accentBg} flex items-center justify-center border ${currentTheme.mobile.accentBorder}`}>
+                    <svg className={`w-3.5 h-3.5 ${currentTheme.mobile.accent}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-9-3.5h.008v.008H3.75V6m0 3h.008v.008H3.75V9zm0 3h.008v.008H3.75v-.008zm0 3h.008v.008H3.75v-.008zm0 3h.008v.008H3.75v-.008z" />
                     </svg>
                   </div>
@@ -393,7 +453,9 @@ export default function Hero() {
             </div>
 
             {/* Glowing accent border bottom */}
-            <div className={`absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-${cardColor === "black" ? "orange" : cardColor}-500/20 to-transparent`} />
+            <div className={`absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-${
+              cardColor === "black" ? "orange" : cardColor === "gold" ? "amber" : "blue"
+            }-500/20 to-transparent`} />
           </motion.div>
 
           {/* Underlay glow circle */}
