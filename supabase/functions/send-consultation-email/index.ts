@@ -11,7 +11,10 @@ interface WebhookPayload {
     business_name: string;
     email: string | null;
     phone: string;
+    whatsapp: string | null;
+    category: string | null;
     services_interested: string[];
+    message: string | null;
     created_at: string;
   };
   old_record: any;
@@ -21,6 +24,65 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+async function sendTelegramAlert(record: WebhookPayload["record"]) {
+  const token = Deno.env.get("TELEGRAM_BOT_TOKEN");
+  const chatId = Deno.env.get("TELEGRAM_ADMIN_CHAT_ID");
+
+  if (!token || !chatId) {
+    console.log("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_ADMIN_CHAT_ID. Skipping Telegram alert.");
+    return;
+  }
+
+  const { id, full_name, business_name, email, phone, whatsapp, category, services_interested, message } = record;
+  const servicesText = services_interested && services_interested.length > 0 ? services_interested.join(", ") : "General Strategy Inquiry";
+
+  const text = `📬 *New Lead Received on Logor!*\n\n` +
+    `👤 *Name*: ${full_name}\n` +
+    `🏢 *Business*: ${business_name}\n` +
+    `📧 *Email*: ${email || "None"}\n` +
+    `📞 *Phone*: ${phone}\n` +
+    `💬 *WhatsApp*: ${whatsapp || "None"}\n` +
+    `🏷️ *Category*: ${category || "None"}\n` +
+    `🛠️ *Services*: ${servicesText}\n` +
+    `📝 *Message*: ${message || "None"}\n\n` +
+    `🔑 *ID*: \`${id}\``;
+
+  const keyboard = {
+    inline_keyboard: [
+      [
+        { text: "📞 Call Lead", url: `tel:${phone}` },
+        { text: "💬 WhatsApp", url: `https://wa.me/${whatsapp ? whatsapp.replace(/\s+/g, '') : phone.replace(/\s+/g, '')}` }
+      ],
+      [
+        { text: "✅ Convert to Customer", callback_data: `convert_${id}` },
+        { text: "❌ Mark Lost", callback_data: `lost_${id}` }
+      ]
+    ]
+  };
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text,
+        parse_mode: "Markdown",
+        reply_markup: keyboard
+      })
+    });
+    if (!res.ok) {
+      console.error("Failed to send Telegram message:", await res.text());
+    } else {
+      console.log("Telegram alert sent successfully.");
+    }
+  } catch (err) {
+    console.error("Error sending Telegram alert:", err);
+  }
+}
 
 serve(async (req) => {
   // Handle CORS
@@ -39,17 +101,29 @@ serve(async (req) => {
 
     const { type, record } = payload;
 
-    // We only send emails on INSERT triggers
-    if (type !== "INSERT" || !record || !record.email) {
-      console.log("No email to send (not an INSERT or missing email). Skipping.");
+    // We only process INSERT triggers
+    if (type !== "INSERT" || !record) {
+      console.log("No webhook action taken (not an INSERT or missing record). Skipping.");
       return new Response(JSON.stringify({ success: true, message: "Skipped" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
 
+    // Fire Telegram Alert
+    await sendTelegramAlert(record);
+
+    // If there is no email, we cannot send Resend emails, so we exit successfully here
+    if (!record.email) {
+      console.log("No email to send. Skipping Resend email notifications.");
+      return new Response(JSON.stringify({ success: true, message: "Telegram alert sent; email skipped" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     const { full_name, business_name, email, services_interested } = record;
-    const servicesText = services_interested.length > 0 ? services_interested.join(", ") : "General Strategy Inquiry";
+    const servicesText = services_interested && services_interested.length > 0 ? services_interested.join(", ") : "General Strategy Inquiry";
 
     // Resend Email API Request Body
     // NOTE: Free Resend accounts can only send from onboarding@resend.dev to verified emails.

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import CursorGlow from "@/components/CursorGlow";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -24,6 +25,7 @@ export default function RootLayout({
       className={`${inter.variable} scroll-smooth h-full antialiased`}
     >
       <body className="font-sans min-h-full bg-charcoal text-white selection:bg-orange-500 selection:text-white flex flex-col">
+        <CursorGlow />
         {children}
       </body>
     </html>
