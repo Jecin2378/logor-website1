@@ -343,7 +343,13 @@ export async function POST(req: Request) {
         await callTelegram('answerCallbackQuery', {
           callback_query_id: callbackQueryId,
           text: 'Marked as lost.',
-        })    // 3. Handle Messages
+        });
+      }
+
+      return NextResponse.json({ success: true });
+    }
+
+    // 3. Handle Messages
     if (payload.message) {
       const { text, from, reply_to_message } = payload.message;
       const userId = from.id.toString();
@@ -494,10 +500,6 @@ export async function POST(req: Request) {
               reply_markup: visitorMenuKeyboard
             });
           }
-        }
-      }
-    }sage_id: payload.message.message_id,
-          });
         }
       }
     }
