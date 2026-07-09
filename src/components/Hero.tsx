@@ -3,20 +3,39 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring, useAnimationFrame } from "framer-motion";
 
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
   const [category, setCategory] = useState("TAP TO CONNECT");
-  const [cardColor, setCardColor] = useState<"black" | "gold" | "blue">("black");
+  const [cardColor, setCardColor] = useState<"black" | "gold" | "blue" | "orange" | "white" | "ops">("ops");
+  const [isHovering, setIsHovering] = useState(false);
 
-  // 3D Card Rotation Motion Values
+  // 3D Card Rotation Motion Values (X, Y, and Z axes)
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const z = useMotionValue(0);
 
   // Smooth springs for rotation
   const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { stiffness: 300, damping: 25 });
   const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { stiffness: 300, damping: 25 });
+  const rotateZ = useSpring(useTransform(z, [-0.5, 0.5], [-4, 4]), { stiffness: 300, damping: 25 });
+
+  // Perpetual realistic 3D floating and swirling motion using multi-frequency harmonic loops
+  useAnimationFrame((t) => {
+    if (!isHovering) {
+      // Combining multiple sine waves with prime/non-divisible frequencies
+      // simulates a highly realistic, fluid noise-like floating motion on X, Y, and Z
+      const rx = Math.sin(t * 0.001) * 8 + Math.cos(t * 0.0016) * 4; // complex X swing
+      const ry = Math.cos(t * 0.0008) * 10 + Math.sin(t * 0.0013) * 3; // complex Y swing
+      const rz = Math.sin(t * 0.0006) * 2.5; // subtle roll/Z swing
+
+      // Normalize values to map back to standard spring bounds
+      x.set(ry / 15);
+      y.set(rx / -15);
+      z.set(rz / 4);
+    }
+  });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -28,12 +47,15 @@ export default function Hero() {
     // Normalize coordinates between -0.5 and 0.5
     x.set(mouseX / width);
     y.set(mouseY / height);
+    z.set((mouseX / width) * 0.25); // Subtle responsive roll based on mouse X position
   };
 
   const handleMouseLeave = () => {
+    setIsHovering(false);
     // Reset rotation when cursor leaves the card
     x.set(0);
     y.set(0);
+    z.set(0);
   };
 
   // Style configurations for each theme
@@ -78,6 +100,48 @@ export default function Hero() {
         logoFilter: "none",
         nfcText: "text-white/60",
         badgeBorder: "border-white/20"
+      }
+    },
+    orange: {
+      card: {
+        background: "linear-gradient(135deg, #FF8800 0%, #FF6A00 50%, #E04F00 100%)", // Rich brand orange gradient
+        border: "border-white/15",
+        text: "text-white",
+        accent: "text-white",
+        accentBg: "bg-white/15",
+        accentBorder: "border-white/25",
+        badgeGradient: "from-white/15 to-transparent",
+        logoFilter: "none",
+        nfcText: "text-white/50",
+        badgeBorder: "border-white/15"
+      }
+    },
+    white: {
+      card: {
+        background: "linear-gradient(135deg, #FFFFFF 0%, #F5F5F7 60%, #E5E5E7 100%)", // Premium matte white / silver
+        border: "border-stone-900/10",
+        text: "text-stone-900",
+        accent: "text-stone-950",
+        accentBg: "bg-stone-950/5",
+        accentBorder: "border-stone-950/10",
+        badgeGradient: "from-stone-950/5 to-transparent",
+        logoFilter: "none",
+        nfcText: "text-stone-950/45",
+        badgeBorder: "border-stone-950/10"
+      }
+    },
+    ops: {
+      card: {
+        background: "#080D1A", // Deep Obsidian Navy Blue
+        border: "border-blue-500/20",
+        text: "text-white",
+        accent: "text-[#FF6A00]",
+        accentBg: "bg-white/10",
+        accentBorder: "border-white/20",
+        badgeGradient: "from-blue-500/20 to-transparent",
+        logoFilter: "none",
+        nfcText: "text-white/50",
+        badgeBorder: "border-blue-500/20"
       }
     }
   };
@@ -193,12 +257,49 @@ export default function Hero() {
                 background: currentTheme.card.background,
                 rotateX,
                 rotateY,
+                rotateZ,
                 transformStyle: "preserve-3d",
               }}
+              onMouseEnter={() => setIsHovering(true)}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               className={`relative w-72 sm:w-80 aspect-[1.586/1] rounded-xl p-6 border ${currentTheme.card.border} overflow-hidden flex flex-col justify-between group shadow-2xl cursor-pointer hover:scale-[1.02] transition-shadow duration-300`}
             >
+              {/* 3D Diagonal Stripes for OPS theme */}
+              {cardColor === "ops" && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl" style={{ transformStyle: "preserve-3d" }}>
+                  {/* Blue Stripe */}
+                  <div
+                    className="absolute w-5 h-[350px] bg-[#0F3D8C] opacity-80"
+                    style={{
+                      left: "15%",
+                      top: "-50px",
+                      transform: "translate3d(0, 0, 10px) rotate(-35deg)",
+                      boxShadow: "0 0 15px rgba(15, 61, 140, 0.4)",
+                    }}
+                  />
+                  {/* White Stripe */}
+                  <div
+                    className="absolute w-5 h-[350px] bg-white opacity-85"
+                    style={{
+                      left: "30%",
+                      top: "-50px",
+                      transform: "translate3d(0, 0, 16px) rotate(-35deg)",
+                      boxShadow: "0 0 15px rgba(255, 255, 255, 0.3)",
+                    }}
+                  />
+                  {/* Orange Stripe */}
+                  <div
+                    className="absolute w-7 h-[350px] bg-[#FF6A00] opacity-95"
+                    style={{
+                      left: "44%",
+                      top: "-50px",
+                      transform: "translate3d(0, 0, 22px) rotate(-35deg)",
+                      boxShadow: "0 0 20px rgba(255, 106, 0, 0.5)",
+                    }}
+                  />
+                </div>
+              )}
               {/* Shimmer overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -292,10 +393,11 @@ export default function Hero() {
               {/* Color Swapper Controls */}
               <div>
                 <label className="block text-[9px] text-gray-500 uppercase tracking-wider mb-1.5 font-semibold">Card Finish / Theme</label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <button
+                    type="button"
                     onClick={() => setCardColor("black")}
-                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                    className={`py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
                       cardColor === "black"
                         ? "bg-white/10 text-white border-white/20 shadow-md"
                         : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
@@ -304,8 +406,9 @@ export default function Hero() {
                     Matte Black
                   </button>
                   <button
+                    type="button"
                     onClick={() => setCardColor("gold")}
-                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                    className={`py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
                       cardColor === "gold"
                         ? "bg-amber-500/20 text-amber-300 border-amber-400/30 shadow-md"
                         : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
@@ -314,14 +417,48 @@ export default function Hero() {
                     Gold
                   </button>
                   <button
+                    type="button"
                     onClick={() => setCardColor("blue")}
-                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                    className={`py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
                       cardColor === "blue"
                         ? "bg-blue-400/20 text-blue-300 border-blue-400/30 shadow-md"
                         : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
                     }`}
                   >
                     Blue
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCardColor("orange")}
+                    className={`py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                      cardColor === "orange"
+                        ? "bg-orange-500/20 text-orange-300 border-orange-400/30 shadow-md"
+                        : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
+                    }`}
+                  >
+                    Orange
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCardColor("white")}
+                    className={`py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                      cardColor === "white"
+                        ? "bg-stone-100 text-stone-900 border-stone-300 shadow-md"
+                        : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
+                    }`}
+                  >
+                    White
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCardColor("ops")}
+                    className={`py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+                      cardColor === "ops"
+                        ? "bg-gradient-to-r from-blue-600 via-orange-500 to-stone-100 text-white border-blue-400 shadow-md"
+                        : "bg-white/2 text-gray-400 border-white/5 hover:bg-white/5"
+                    }`}
+                  >
+                    OPS Card
                   </button>
                 </div>
               </div>

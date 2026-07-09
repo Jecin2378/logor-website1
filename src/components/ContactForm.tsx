@@ -464,9 +464,9 @@ export default function ContactForm() {
 
                     <button
                       onClick={() => setSubmittedData(null)}
-                      className="w-full py-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/5 text-gray-400 hover:text-white font-semibold text-sm transition-all"
+                      className="w-full py-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/5 text-gray-400 hover:text-white font-semibold text-sm transition-all cursor-pointer"
                     >
-                      OK, got it!
+                      Okay! got it
                     </button>
                   </div>
                 </motion.div>
