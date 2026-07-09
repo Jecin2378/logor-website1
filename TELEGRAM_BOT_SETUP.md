@@ -39,12 +39,25 @@ SUPABASE_SERVICE_ROLE_KEY=your_actual_service_role_key
 ```
 
 ### 2. Supabase Edge Functions Secrets
-You need to set the secrets inside your Supabase project so that the Edge Function trigger can communicate with Telegram.
+You need to set the secrets inside your Supabase project so that the Edge Function trigger can communicate with Telegram and Resend.
+
 Run this command using the Supabase npm tool:
 ```bash
 npx supabase secrets set TELEGRAM_BOT_TOKEN=your_bot_token_here TELEGRAM_ADMIN_CHAT_ID=your_chat_id_here --project-ref ytrfiteoqbxpwctkvfuj
 ```
-*(Alternatively, you can set them in the Supabase Dashboard under **Project Settings** > **Edge Runtime** > **Secrets**).*
+
+#### Note on Resend Email Sandbox Restriction:
+By default, free Resend accounts can only send emails from `onboarding@resend.dev` to the account owner's registered email address (e.g. `jecincode@gmail.com`). 
+If a lead inputs a different email address during testing, Resend will return a `403 Forbidden validation_error`.
+
+To send emails to external recipients:
+1. Verify your custom domain (e.g. `logor.in`) at [resend.com/domains](https://resend.com/domains).
+2. Set the `RESEND_FROM_EMAIL` secret in your Supabase project to your custom domain email (e.g. `Logor Team <consulting@logor.in>`):
+```bash
+npx supabase secrets set RESEND_FROM_EMAIL="Logor Team <consulting@logor.in>" --project-ref ytrfiteoqbxpwctkvfuj
+```
+
+*(Alternatively, you can set all secrets in the Supabase Dashboard under **Project Settings** > **Edge Runtime** > **Secrets**).*
 
 ---
 

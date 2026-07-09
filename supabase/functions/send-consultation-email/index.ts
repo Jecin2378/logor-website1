@@ -126,9 +126,10 @@ serve(async (req) => {
 
     // Resend Email API Request Body
     // NOTE: Free Resend accounts can only send from onboarding@resend.dev to verified emails.
-    // Once domain is verified on Resend, change the "from" to your own sender address (e.g. consulting@logor.in).
+    // Once domain is verified on Resend, configure RESEND_FROM_EMAIL in Supabase secrets (e.g. Logor Team <consulting@logor.in>).
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Logor Team <onboarding@resend.dev>";
     const emailBody = {
-      from: "Logor Team <onboarding@resend.dev>",
+      from: fromEmail,
       to: [email],
       subject: "Consultation Booked - Logor Digital Transformation",
       html: `

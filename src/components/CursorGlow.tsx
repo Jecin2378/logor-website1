@@ -11,10 +11,20 @@ export default function CursorGlow() {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // Ultra-fast, low-latency spring physics that keeps the trailing smooth but snappy
-  const springConfig = { damping: 35, stiffness: 500, mass: 0.15 };
-  const glowX = useSpring(mouseX, springConfig);
-  const glowY = useSpring(mouseY, springConfig);
+  // 1. Inner Core: Extremely snappy and responsive, closely following the cursor
+  const coreSpringConfig = { damping: 45, stiffness: 850, mass: 0.08 };
+  const coreX = useSpring(mouseX, coreSpringConfig);
+  const coreY = useSpring(mouseY, coreSpringConfig);
+
+  // 2. Middle Glow: Fluid, medium-speed trailing that gives thickness to the movement
+  const midSpringConfig = { damping: 30, stiffness: 350, mass: 0.18 };
+  const midX = useSpring(mouseX, midSpringConfig);
+  const midY = useSpring(mouseY, midSpringConfig);
+
+  // 3. Outer Ambient Halo: Floating, slower trailing that creates a wide, magical aura
+  const ambientSpringConfig = { damping: 24, stiffness: 140, mass: 0.35 };
+  const ambientX = useSpring(mouseX, ambientSpringConfig);
+  const ambientY = useSpring(mouseY, ambientSpringConfig);
 
   useEffect(() => {
     // Detect mouse move
@@ -74,45 +84,66 @@ export default function CursorGlow() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden mix-blend-screen">
-      {/* Outer soft ambient glow halo */}
+      {/* 3. Outer soft ambient glow halo (slowest trail, widest spread) */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          x: glowX,
-          y: glowY,
+          x: ambientX,
+          y: ambientY,
           translateX: "-50%",
           translateY: "-50%",
-          background: "radial-gradient(circle, rgba(255, 106, 0, 0.10) 0%, rgba(255, 140, 50, 0.03) 50%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255, 106, 0, 0.08) 0%, rgba(255, 130, 0, 0.03) 50%, rgba(255, 106, 0, 0) 100%)",
         }}
         animate={{
-          width: isHovered ? 500 : 350,
-          height: isHovered ? 500 : 350,
+          width: isHovered ? 600 : 400,
+          height: isHovered ? 600 : 400,
         }}
         transition={{
           type: "spring",
-          stiffness: 250,
-          damping: 22,
+          stiffness: 200,
+          damping: 24,
         }}
       />
 
-      {/* Inner focused bright glow core */}
+      {/* 2. Middle warm fluid glow (medium trail, soft spread) */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          x: glowX,
-          y: glowY,
+          x: midX,
+          y: midY,
           translateX: "-50%",
           translateY: "-50%",
-          background: "radial-gradient(circle, rgba(255, 106, 0, 0.20) 0%, rgba(255, 106, 0, 0.05) 50%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255, 106, 0, 0.16) 0%, rgba(255, 130, 0, 0.06) 40%, rgba(255, 106, 0, 0) 80%)",
         }}
         animate={{
-          width: isHovered ? 140 : 80,
-          height: isHovered ? 140 : 80,
+          width: isHovered ? 300 : 200,
+          height: isHovered ? 300 : 200,
         }}
         transition={{
           type: "spring",
-          stiffness: 250,
-          damping: 22,
+          stiffness: 200,
+          damping: 24,
+        }}
+      />
+
+      {/* 1. Inner focused bright core (snappiest trail, highest opacity with luminous white center) */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          x: coreX,
+          y: coreY,
+          translateX: "-50%",
+          translateY: "-50%",
+          background: "radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(255, 106, 0, 0.45) 30%, rgba(255, 106, 0, 0.1) 65%, transparent 100%)",
+        }}
+        animate={{
+          width: isHovered ? 100 : 50,
+          height: isHovered ? 100 : 50,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 24,
         }}
       />
     </div>
