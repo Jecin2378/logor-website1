@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -25,7 +25,7 @@ import type { LeadDbRow, CustomerDbRow, CrmTask, CrmFile, CrmNote } from "@/type
 
 export default function ClientPortalDashboard() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Lock, Mail, ArrowRight, AlertTriangle, User, CheckCircle2 } from "lucide-react";
@@ -10,7 +10,7 @@ import AnimatedBackground from "@/components/AnimatedBackground";
 
 export default function ClientPortalAuth() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
