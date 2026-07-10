@@ -10,6 +10,7 @@ import FAQ from "@/components/FAQ";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
+import ChatbotWidget from "@/components/ChatbotWidget";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
 export default function Home() {
@@ -38,6 +39,7 @@ export default function Home() {
 
       {/* Global widgets */}
       <WhatsAppWidget />
+      <ChatbotWidget />
     </div>
   );
 }

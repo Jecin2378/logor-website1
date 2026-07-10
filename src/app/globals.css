@@ -353,3 +353,20 @@ select:focus {
   animation: particleDrift 10s linear infinite;
   will-change: transform, opacity;
 }
+
+/* ========================================
+   CHATBOT WIDGET SCROLLBAR
+   ======================================== */
+.logor-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.logor-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.logor-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 106, 0, 0.25);
+  border-radius: 2px;
+}
+.logor-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 106, 0, 0.5);
+}
