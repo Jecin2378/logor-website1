@@ -40,6 +40,14 @@ const KNOWLEDGE_BASE = [
     response: "You can reach us directly:\n- **Phone/WhatsApp**: +91 7305313682\n- **Email**: consulting@logor.in\n- **Office**: Puducherry, India\n\nYou can also click the WhatsApp or Telegram icon in the chat header to talk to a human directly!"
   },
   {
+    keywords: ["qr", "qr code", "scan", "quick response"],
+    response: "We generate custom QR codes for your storefront, menus, flyers, and table tents. These scan directly to your mobile business profile, letting customers view menus, pay, or submit reviews instantly."
+  },
+  {
+    keywords: ["eligible", "who", "business type", "suitable", "shops", "for", "whom"],
+    response: "We support all kinds of local businesses in India! This includes retail stores, salons, restaurants, clinics, cafes, hotels, professional service providers, and freelancers. Any business looking to attract local customers can benefit."
+  },
+  {
     keywords: ["hello", "hi", "hey", "greetings", "anyone there", "start", "about"],
     response: "Hello! 👋 I'm the Logor AI Assistant. How can I help you digitize your business today? You can ask about our NFC cards, pricing, setup time, or select one of the quick options below."
   }
@@ -110,6 +118,7 @@ export default function WhatsAppWidget() {
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [whatsappConfirmUrl, setWhatsappConfirmUrl] = useState("");
 
   // Conversational Booking Flow States
   const [bookingState, setBookingState] = useState<"idle" | "name" | "business" | "phone" | "services" | "completed">("idle");
@@ -247,10 +256,26 @@ export default function WhatsAppWidget() {
       setIsTyping(false);
       if (error) throw error;
 
-      setBookingState("completed");
+      // Prefill confirmation URL
+      const confirmUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+        `Hi Logor! I just booked a free consultation via the AI chatbot.\n\nName: ${bookingData.fullName}\nBusiness: ${bookingData.businessName}\nServices: ${bookingData.servicesInterested.join(", ") || "General Inquiry"}`
+      )}`;
+      setWhatsappConfirmUrl(confirmUrl);
+
+      // Return to idle state so they can continue typing next
+      setBookingState("idle");
+
+      // Save names for success message
+      const savedName = bookingData.fullName;
+      const savedBusiness = bookingData.businessName;
+      const savedPhone = bookingData.phone;
+
+      // Clear local booking data
+      setBookingData({ fullName: "", businessName: "", phone: "", servicesInterested: [] });
+
       addMessage(
         "ai",
-        `🎉 *Consultation Request Submitted successfully!*\n\nThank you, ${bookingData.fullName}. We have registered ${bookingData.businessName} for our digital acceleration review. Our team will contact you at ${bookingData.phone} shortly!`
+        `🎉 *Consultation Request Submitted successfully!*\n\nThank you, ${savedName}. We have registered ${savedBusiness} for our digital acceleration review. Our team will contact you at ${savedPhone} shortly!\n\nClick the button below to confirm on WhatsApp, or continue asking questions here!`
       );
     } catch (err) {
       setIsTyping(false);
@@ -294,7 +319,9 @@ export default function WhatsAppWidget() {
         addMessage("ai", "No problem! You can chat with our support team directly. Click the green WhatsApp button in the header of this window, or message our Telegram bot at any time.");
       }, 800);
     } else {
-      handleSend(suggestion);
+      // Strip emojis from trigger query to help NLP keyword matching
+      const cleanSuggestion = suggestion.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, "").trim();
+      handleSend(cleanSuggestion);
     }
   };
 
@@ -303,6 +330,8 @@ export default function WhatsAppWidget() {
     "What is an NFC card? 💳",
     "How does Review Booster work? 📈",
     "Pricing & Plans 💰",
+    "QR Codes 📲",
+    "Who is this for? 🏢",
     "Book Consultation 📅",
     "Chat with Human 📞"
   ];
@@ -393,17 +422,32 @@ export default function WhatsAppWidget() {
             <div className="flex-grow p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-white/10 select-text">
               {messages.map((msg) => {
                 const isAi = msg.sender === "ai";
+                const isSuccessMessage = msg.text.includes("Consultation Request Submitted successfully!");
                 return (
-                  <div key={msg.id} className={`flex ${isAi ? "justify-start" : "justify-end"}`}>
-                    <div
-                      className={`p-3.5 rounded-2xl text-sm leading-relaxed max-w-[85%] whitespace-pre-line ${
-                        isAi
-                          ? "bg-white/[0.03] border border-white/5 text-gray-200 rounded-tl-none"
-                          : "bg-gradient-to-r from-[#FF6A00] to-[#FF8833] text-black font-semibold rounded-tr-none shadow-[0_4px_15px_rgba(255,106,0,0.15)]"
-                      }`}
-                    >
-                      {msg.text}
+                  <div key={msg.id} className="flex flex-col gap-2">
+                    <div className={`flex ${isAi ? "justify-start" : "justify-end"}`}>
+                      <div
+                        className={`p-3.5 rounded-2xl text-sm leading-relaxed max-w-[85%] whitespace-pre-line ${
+                          isAi
+                            ? "bg-white/[0.03] border border-white/5 text-gray-200 rounded-tl-none"
+                            : "bg-gradient-to-r from-[#FF6A00] to-[#FF8833] text-black font-semibold rounded-tr-none shadow-[0_4px_15px_rgba(255,106,0,0.15)]"
+                        }`}
+                      >
+                        {msg.text}
+                      </div>
                     </div>
+                    {isSuccessMessage && whatsappConfirmUrl && (
+                      <div className="flex flex-col gap-2 max-w-[85%] self-start w-full">
+                        <a
+                          href={whatsappConfirmUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-bold text-xs rounded-xl text-center shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all duration-200 flex items-center justify-center gap-1.5"
+                        >
+                          Confirm via WhatsApp
+                        </a>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -477,24 +521,7 @@ export default function WhatsAppWidget() {
 
             {/* Chat Footer Input / CTA button */}
             <div className="p-4 bg-white/[0.02] border-t border-white/5">
-              {bookingState === "completed" ? (
-                <div className="flex flex-col gap-2">
-                  <a
-                    href={bookingWhatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-bold text-xs rounded-xl text-center shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all duration-200 flex items-center justify-center gap-1.5"
-                  >
-                    Confirm via WhatsApp
-                  </a>
-                  <button
-                    onClick={resetChat}
-                    className="w-full py-2.5 border border-white/10 hover:border-white/20 bg-white/5 text-gray-300 hover:text-white text-xs font-semibold rounded-xl transition-all duration-200"
-                  >
-                    Start New Chat
-                  </button>
-                </div>
-              ) : bookingState === "services" ? (
+              {bookingState === "services" ? (
                 <div className="text-[10px] text-center text-gray-500 font-medium">
                   Please check the services you need above to complete submission.
                 </div>
