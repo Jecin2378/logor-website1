@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 
 interface Particle {
   id: number;
@@ -23,7 +22,6 @@ const StarSparkle = ({ size, color }: { size: number; color: string }) => (
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    style={{ filter: "drop-shadow(0 0 4px " + color + ")" }}
   >
     <path
       d="M12 0L14.8 9.2L24 12L14.8 14.8L12 24L9.2 14.8L0 12L9.2 9.2L12 0Z"
@@ -44,7 +42,8 @@ export default function AnimatedBackground() {
       "#FFFFFF", // Pure Luminous Star
     ];
 
-    const generated: Particle[] = Array.from({ length: 45 }).map((_, i) => {
+    // Reduced count from 45 to 20 for scrolling performance boost
+    const generated: Particle[] = Array.from({ length: 20 }).map((_, i) => {
       const isStar = Math.random() > 0.7; // 30% are 4-pointed stars
       const size = isStar ? Math.random() * 3 + 2.5 : Math.random() * 2.5 + 1; // 1px to 5.5px
       return {
@@ -53,10 +52,10 @@ export default function AnimatedBackground() {
         color: colors[Math.floor(Math.random() * colors.length)],
         top: Math.random() * 100,
         left: Math.random() * 100,
-        duration: Math.random() * 5 + 4, // Faster 4s to 9s drift for live motion
+        duration: Math.random() * 5 + 6, // Slower 6s to 11s drift for elegant, lighter CPU workload
         delay: Math.random() * -15, // Negative delay to pre-seed on screen
         driftX: (Math.random() - 0.5) * 80, // Horizontal swing
-        driftY: -(Math.random() * 120 + 80), // Increased upwards drift matching faster speed
+        driftY: -(Math.random() * 120 + 80), // Upward drift
         isStar,
       };
     });
@@ -69,114 +68,62 @@ export default function AnimatedBackground() {
       {/* Deep luxury base gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#040404] via-[#090909] to-[#0E0B08]" />
 
-      {/* Large floating orbs with smooth, active animations */}
-      <motion.div
-        className="absolute w-[600px] h-[600px] rounded-full"
+      {/* Large floating orbs with smooth, active animations (bypasses framer-motion, zero filter blurs) */}
+      <div
+        className="absolute w-[600px] h-[600px] rounded-full animate-float-orb-1"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,106,0,0.06) 0%, rgba(255,106,0,0.01) 60%, transparent 80%)",
+            "radial-gradient(circle, rgba(255,106,0,0.08) 0%, rgba(255,106,0,0.02) 40%, rgba(255,106,0,0.005) 70%, transparent 85%)",
           top: "5%",
           left: "-10%",
-          filter: "blur(60px)",
-        }}
-        animate={{
-          x: [0, 60, -40, 0],
-          y: [0, -50, 30, 0],
-          scale: [1, 1.1, 0.95, 1],
-        }}
-        transition={{
-          duration: 15, // Increased speed
-          repeat: Infinity,
-          ease: "easeInOut",
         }}
       />
 
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full"
+      <div
+        className="absolute w-[500px] h-[500px] rounded-full animate-float-orb-2"
         style={{
           background:
-            "radial-gradient(circle, rgba(213,198,37,0.04) 0%, rgba(255,106,0,0.01) 50%, transparent 70%)",
+            "radial-gradient(circle, rgba(213,198,37,0.06) 0%, rgba(255,106,0,0.015) 45%, transparent 80%)",
           top: "45%",
           right: "-10%",
-          filter: "blur(50px)",
-        }}
-        animate={{
-          x: [0, -50, 30, 0],
-          y: [0, 40, -60, 0],
-          scale: [1, 0.95, 1.05, 1],
-        }}
-        transition={{
-          duration: 18, // Increased speed
-          repeat: Infinity,
-          ease: "easeInOut",
         }}
       />
 
-      <motion.div
-        className="absolute w-[450px] h-[450px] rounded-full"
+      <div
+        className="absolute w-[450px] h-[450px] rounded-full animate-float-orb-3"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,106,0,0.04) 0%, transparent 60%)",
+            "radial-gradient(circle, rgba(255,106,0,0.06) 0%, rgba(255,106,0,0.01) 50%, transparent 80%)",
           bottom: "5%",
           left: "25%",
-          filter: "blur(40px)",
-        }}
-        animate={{
-          x: [0, 80, -40, 0],
-          y: [0, -30, 50, 0],
-          scale: [1, 1.15, 0.9, 1],
-        }}
-        transition={{
-          duration: 16, // Increased speed
-          repeat: Infinity,
-          ease: "easeInOut",
         }}
       />
 
       {/* Subtle gold accent orb */}
-      <motion.div
-        className="absolute w-[350px] h-[350px] rounded-full"
+      <div
+        className="absolute w-[350px] h-[350px] rounded-full animate-float-orb-4"
         style={{
           background:
-            "radial-gradient(circle, rgba(213,198,37,0.03) 0%, transparent 60%)",
+            "radial-gradient(circle, rgba(213,198,37,0.05) 0%, transparent 75%)",
           top: "25%",
           left: "60%",
-          filter: "blur(40px)",
-        }}
-        animate={{
-          x: [0, -50, 30, 0],
-          y: [0, 30, -40, 0],
-          opacity: [0.6, 1, 0.5, 0.6],
-        }}
-        transition={{
-          duration: 12, // Increased speed
-          repeat: Infinity,
-          ease: "easeInOut",
         }}
       />
 
-      {/* Live Luxury Glitter / Sparkling Particles */}
+      {/* Live Luxury Glitter / Sparkling Particles (GPU CSS animations replace JS loop frames) */}
       {particles.map((p) => (
-        <motion.div
+        <div
           key={p.id}
-          className="absolute flex items-center justify-center"
+          className="absolute flex items-center justify-center animate-particle-drift"
           style={{
             top: `${p.top}%`,
             left: `${p.left}%`,
-          }}
-          animate={{
-            y: [0, p.driftY],
-            x: [0, p.driftX],
-            opacity: [0, 0.7, 1, 0.8, 0.3, 0],
-            scale: p.isStar ? [0, 1.2, 0.8, 1.3, 0] : [0, 1.1, 1.1, 0],
-            rotate: p.isStar ? [0, 90, 180, 270, 360] : 0,
-          }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            ease: "linear",
-            delay: p.delay,
-          }}
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            "--drift-x": `${p.driftX}px`,
+            "--drift-y": `${p.driftY}px`,
+            "--drift-rotation": p.isStar ? "360deg" : "0deg",
+          } as React.CSSProperties}
         >
           {p.isStar ? (
             <StarSparkle size={p.size} color={p.color} />
@@ -187,11 +134,11 @@ export default function AnimatedBackground() {
                 width: p.size,
                 height: p.size,
                 backgroundColor: p.color,
-                boxShadow: `0 0 6px ${p.color}`,
+                boxShadow: `0 0 4px ${p.color}`,
               }}
             />
           )}
-        </motion.div>
+        </div>
       ))}
 
       {/* Animated fine mesh grid overlay */}

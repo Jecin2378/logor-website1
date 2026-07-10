@@ -6,12 +6,20 @@ import { motion, useMotionValue } from "framer-motion";
 export default function CursorGlow() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
 
   // Motion values for raw cursor position
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
   useEffect(() => {
+    // Detect if touch/coarse pointer device
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    if (coarsePointer) {
+      setIsTouch(true);
+      return;
+    }
+
     // Detect mouse move
     const handleMouseMove = (e: MouseEvent) => {
       // First move makes it visible (safeguards for hydration & touch devices)
@@ -64,12 +72,12 @@ export default function CursorGlow() {
     };
   }, [mouseX, mouseY, isVisible]);
 
-  // Don't render on server-side or until the mouse moves
-  if (!isVisible) return null;
+  // Don't render on server-side, touch devices, or until the mouse moves
+  if (isTouch || !isVisible) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden mix-blend-screen">
-      {/* Single, soft, ambient glow (locked to cursor with zero lag, highly blurred) */}
+      {/* Single, soft, ambient glow (locked to cursor with zero lag, optimized gradient replaces filter blur) */}
       <motion.div
         className="absolute rounded-full"
         style={{
@@ -77,8 +85,8 @@ export default function CursorGlow() {
           y: mouseY,
           translateX: "-50%",
           translateY: "-50%",
-          background: "radial-gradient(circle, rgba(255, 106, 0, 0.22) 0%, rgba(213, 198, 37, 0.06) 50%, transparent 80%)",
-          filter: "blur(60px)",
+          background: "radial-gradient(circle, rgba(255, 106, 0, 0.15) 0%, rgba(213, 198, 37, 0.04) 35%, rgba(213, 198, 37, 0.005) 60%, transparent 80%)",
+          willChange: "transform",
         }}
         animate={{
           width: isHovered ? 550 : 350,

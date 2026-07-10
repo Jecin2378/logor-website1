@@ -270,48 +270,33 @@ body {
 }
 
 /* ========================================
-   MAGICAL HOVER EDGE GLOW HIGHLIGHT SYSTEM
+   LIGHTWEIGHT HOVER HIGHLIGHT SYSTEM
    ======================================== */
-@keyframes heatGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 106, 0, 0.35),
-                0 0 6px rgba(213, 198, 37, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 106, 0, 0.55);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(255, 51, 0, 0.6),
-                0 0 18px rgba(213, 198, 37, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border-color: rgba(213, 198, 37, 0.85);
-  }
-}
 
+/* Transitions for small interactive elements only (not large layout panels) */
 button,
 input,
 textarea,
 select,
-.glass-panel,
-.glass-panel-light,
 .glass-card,
 [role="button"],
-a[class*="border"],
-a[class*="bg-"] {
-  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+a {
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Hover effect for small interactive elements */
 button:hover,
-.glass-panel:hover,
-.glass-panel-light:hover,
 .glass-card:hover,
 [role="button"]:hover,
 a[class*="border"]:hover,
 a[class*="bg-"]:hover {
-  animation: heatGlow 2s infinite ease-in-out !important;
-  transform: translateY(-4px) scale(1.01) !important;
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 28px -8px rgba(255, 106, 0, 0.3),
+              0 0 15px -3px rgba(255, 106, 0, 0.15);
+  border-color: rgba(255, 106, 0, 0.4);
 }
 
 input:focus,
@@ -319,4 +304,66 @@ textarea:focus,
 select:focus {
   border-color: rgba(213, 198, 37, 0.6) !important;
   box-shadow: 0 0 15px rgba(255, 106, 0, 0.15) !important;
+  outline: none;
+}
+
+/* ========================================
+   GPU-ACCELERATED BACKGROUND KEYFRAMES
+   ======================================= */
+@keyframes floatOrb1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(50px, -40px, 0) scale(1.04); }
+  66% { transform: translate3d(-30px, 20px, 0) scale(0.96); }
+}
+@keyframes floatOrb2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(-40px, 30px, 0) scale(0.96); }
+  66% { transform: translate3d(20px, -50px, 0) scale(1.04); }
+}
+@keyframes floatOrb3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(60px, -20px, 0) scale(1.08); }
+  66% { transform: translate3d(-30px, 40px, 0) scale(0.92); }
+}
+@keyframes floatOrb4 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(0.92) opacity(0.5); }
+  50% { transform: translate3d(-40px, 20px, 0) scale(1.08) opacity(0.9); }
+}
+
+@keyframes particleDrift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(var(--drift-x, 40px), var(--drift-y, -120px), 0) rotate(var(--drift-rotation, 360deg));
+    opacity: 0;
+  }
+}
+
+.animate-float-orb-1 {
+  animation: floatOrb1 15s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-float-orb-2 {
+  animation: floatOrb2 18s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-float-orb-3 {
+  animation: floatOrb3 16s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-float-orb-4 {
+  animation: floatOrb4 12s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-particle-drift {
+  animation: particleDrift 10s linear infinite;
+  will-change: transform, opacity;
 }

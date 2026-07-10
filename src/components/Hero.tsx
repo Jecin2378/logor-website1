@@ -1,15 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { motion, useMotionValue, useTransform, useSpring, useAnimationFrame } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring, useAnimationFrame, useInView } from "framer-motion";
 
 export default function Hero() {
   const [businessName, setBusinessName] = useState("YOUR BUSINESS NAME");
   const [category, setCategory] = useState("TAP TO CONNECT");
   const [cardColor, setCardColor] = useState<"black" | "gold" | "blue" | "orange" | "white" | "ops">("ops");
   const [isHovering, setIsHovering] = useState(false);
+
+  // Scroll gating: pause 3D animation loop when section is scrolled out of viewport
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { amount: 0.05 });
 
   // 3D Card Rotation Motion Values (X, Y, and Z axes)
   const x = useMotionValue(0);
@@ -23,6 +27,7 @@ export default function Hero() {
 
   // Perpetual realistic 3D floating and swirling motion using multi-frequency harmonic loops
   useAnimationFrame((t) => {
+    if (!isInView) return; // Skip updates when off-screen to save battery and CPU cycles
     if (!isHovering) {
       // Combining multiple sine waves with prime/non-divisible frequencies
       // simulates a highly realistic, fluid noise-like floating motion on X, Y, and Z
@@ -149,6 +154,7 @@ export default function Hero() {
   const currentTheme = themes[cardColor];
   return (
     <section
+      ref={containerRef}
       id="home"
       className="relative min-h-screen flex items-center justify-center pt-32 pb-16 overflow-hidden"
     >
