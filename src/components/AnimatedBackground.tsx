@@ -141,6 +141,175 @@ export default function AnimatedBackground() {
         </div>
       ))}
 
+      {/* CSS Keyframes for lightning flow and drifting electric sparks */}
+      <style>{`
+        @keyframes lightning-flow {
+          0% {
+            stroke-dasharray: 0 800;
+            stroke-dashoffset: 0;
+            opacity: 0.3;
+          }
+          40% {
+            stroke-dasharray: 180 620;
+            stroke-dashoffset: -150;
+            opacity: 0.9;
+          }
+          80% {
+            stroke-dasharray: 0 800;
+            stroke-dashoffset: -500;
+            opacity: 0.3;
+          }
+          100% {
+            stroke-dasharray: 0 800;
+            stroke-dashoffset: -800;
+            opacity: 0.1;
+          }
+        }
+        @keyframes float-electric-spark {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.1;
+          }
+          33% {
+            transform: translate(45px, -65px) scale(1.2);
+            opacity: 0.45;
+          }
+          66% {
+            transform: translate(-55px, 45px) scale(0.85);
+            opacity: 0.25;
+          }
+          100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.1;
+          }
+        }
+        .animate-lightning-flow {
+          animation: lightning-flow 5s linear infinite;
+        }
+        .animate-electric-spark-1 {
+          animation: float-electric-spark 8s ease-in-out infinite;
+        }
+        .animate-electric-spark-2 {
+          animation: float-electric-spark 11s ease-in-out infinite;
+          animation-delay: -3s;
+        }
+        .animate-electric-spark-3 {
+          animation: float-electric-spark 14s ease-in-out infinite;
+          animation-delay: -7s;
+        }
+        @keyframes circle-flow-clockwise {
+          0% {
+            stroke-dasharray: 150 1600;
+            stroke-dashoffset: 0;
+          }
+          100% {
+            stroke-dasharray: 150 1600;
+            stroke-dashoffset: -1750;
+          }
+        }
+        @keyframes circle-flow-counter-clockwise {
+          0% {
+            stroke-dasharray: 100 900;
+            stroke-dashoffset: 0;
+          }
+          100% {
+            stroke-dasharray: 100 900;
+            stroke-dashoffset: 1000;
+          }
+        }
+        .animate-circle-flow-cw {
+          animation: circle-flow-clockwise 14s linear infinite;
+        }
+        .animate-circle-flow-ccw {
+          animation: circle-flow-counter-clockwise 11s linear infinite;
+        }
+      `}</style>
+
+      {/* Big glowing thunder/lightning symbol in the background with massive concentric comet rings */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 overflow-visible">
+        <svg
+          viewBox="0 0 2000 2000"
+          className="w-[1000px] sm:w-[1800px] h-[1000px] sm:h-[1800px] pointer-events-none"
+        >
+          {/* Outer Concentric Circle (Base + Comet Light) */}
+          <circle cx="1000" cy="1000" r="850" fill="none" stroke="rgba(255,106,0,0.015)" strokeWidth="1" />
+          <circle cx="1000" cy="1000" r="850" fill="none" stroke="url(#lightning-flow-gradient)" strokeWidth="1.5" opacity="0.12" className="animate-circle-flow-cw" strokeLinecap="round" />
+          
+          {/* Inner Concentric Circle / Inline Circle (Base + Comet Light) */}
+          <circle cx="1000" cy="1000" r="500" fill="none" stroke="rgba(255,106,0,0.02)" strokeWidth="1" />
+          <circle cx="1000" cy="1000" r="500" fill="none" stroke="url(#lightning-flow-gradient)" strokeWidth="1.5" opacity="0.15" className="animate-circle-flow-ccw" strokeLinecap="round" />
+          
+          {/* Center Lightning Bolt scaled and positioned at 1000, 1000 */}
+          <g transform="translate(900, 800) scale(2)" style={{ filter: "drop-shadow(0 0 35px rgba(255,106,0,0.4))" }}>
+            {/* Base outer glow */}
+            <path
+              d="M 58 6 L 18 102 H 46 L 28 194 L 82 92 H 54 L 68 6 Z"
+              fill="none"
+              stroke="rgba(255,106,0,0.05)"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Main lightning silhouette */}
+            <path
+              d="M 58 6 L 18 102 H 46 L 28 194 L 82 92 H 54 L 68 6 Z"
+              fill="rgba(255,106,0,0.01)"
+              stroke="rgba(255,106,0,0.1)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Animated moving electric flow stripe */}
+            <path
+              d="M 58 6 L 18 102 H 46 L 28 194 L 82 92 H 54 L 68 6 Z"
+              fill="none"
+              stroke="url(#lightning-flow-gradient)"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="animate-lightning-flow"
+              opacity="0.3"
+            />
+          </g>
+
+          <defs>
+            <linearGradient id="lightning-flow-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#FFAA00" stopOpacity="0.8" />
+              <stop offset="50%" stopColor="#FF6A00" stopOpacity="1" />
+              <stop offset="100%" stopColor="#FF1100" stopOpacity="0.8" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* Moving electric spark lights that drift erratically behind lightning */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] h-[600px] pointer-events-none z-0">
+        <div 
+          className="absolute w-24 h-24 rounded-full animate-electric-spark-1"
+          style={{
+            background: "radial-gradient(circle, rgba(255,106,0,0.18) 0%, transparent 70%)",
+            top: "20%",
+            left: "30%",
+          }}
+        />
+        <div 
+          className="absolute w-32 h-32 rounded-full animate-electric-spark-2"
+          style={{
+            background: "radial-gradient(circle, rgba(255,170,0,0.15) 0%, transparent 70%)",
+            top: "60%",
+            left: "50%",
+          }}
+        />
+        <div 
+          className="absolute w-20 h-20 rounded-full animate-electric-spark-3"
+          style={{
+            background: "radial-gradient(circle, rgba(255,80,0,0.16) 0%, transparent 70%)",
+            top: "40%",
+            left: "20%",
+          }}
+        />
+      </div>
+
       {/* Animated fine mesh grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.02]"
