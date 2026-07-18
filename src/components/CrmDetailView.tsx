@@ -64,6 +64,12 @@ export default function CrmDetailView({
   const [taskDue, setTaskDue] = useState("");
   const [taskPriority, setTaskPriority] = useState<"low" | "medium" | "high">("medium");
 
+  // Task editing state
+  const [editingTask, setEditingTask] = useState<CrmTask | null>(null);
+  const [editTaskTitle, setEditTaskTitle] = useState("");
+  const [editTaskDue, setEditTaskDue] = useState("");
+  const [editTaskPriority, setEditTaskPriority] = useState<"low" | "medium" | "high">("medium");
+
   // File upload state
   const [uploadingFile, setUploadingFile] = useState(false);
 
@@ -290,6 +296,54 @@ export default function CrmDetailView({
     } catch (err: any) {
       alert("Failed to update task: " + err.message);
     }
+  };
+
+  // Start editing a task
+  const startEditTask = (task: CrmTask) => {
+    setEditingTask(task);
+    setEditTaskTitle(task.title);
+    setEditTaskDue(task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : "");
+    setEditTaskPriority(task.priority);
+  };
+
+  // Save task edits
+  const handleEditTaskSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingTask || !editTaskTitle.trim()) return;
+    setSaving(true);
+
+    try {
+      const { error } = await supabase
+        .from("crm_tasks")
+        .update({
+          title: editTaskTitle.trim(),
+          due_date: editTaskDue ? new Date(editTaskDue).toISOString() : null,
+          priority: editTaskPriority
+        })
+        .eq("id", editingTask.id);
+
+      if (error) throw error;
+
+      setTasks(prev =>
+        prev.map(t =>
+          t.id === editingTask.id
+            ? { ...t, title: editTaskTitle.trim(), due_date: editTaskDue ? new Date(editTaskDue).toISOString() : null, priority: editTaskPriority }
+            : t
+        )
+      );
+
+      await logCrmActivity("task_updated", `Task updated: "${editingTask.title}" → "${editTaskTitle.trim()}"`);
+      setEditingTask(null);
+    } catch (err: any) {
+      alert("Failed to update task: " + err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Cancel task editing
+  const cancelEditTask = () => {
+    setEditingTask(null);
   };
 
   // Delete task
@@ -765,6 +819,69 @@ export default function CrmDetailView({
                       </button>
                     </form>
 
+                    {/* Edit Task Inline Form */}
+                    {editingTask && (
+                      <form onSubmit={handleEditTaskSave} className="glass-panel border border-[#FF6A00]/20 rounded-2xl p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold text-[#FF6A00] uppercase tracking-wider">Edit Task</h4>
+                          <button
+                            type="button"
+                            onClick={cancelEditTask}
+                            className="p-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={editTaskTitle}
+                          onChange={(e) => setEditTaskTitle(e.target.value)}
+                          required
+                          className="w-full px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6A00]/50"
+                        />
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold text-gray-500 uppercase">Due Date</label>
+                            <input
+                              type="datetime-local"
+                              value={editTaskDue}
+                              onChange={(e) => setEditTaskDue(e.target.value)}
+                              className="w-full px-3 py-2 rounded-lg bg-[#0F0F0F] border border-white/5 text-xs text-gray-300 focus:outline-none focus:border-[#FF6A00]/50"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold text-gray-500 uppercase">Priority</label>
+                            <select
+                              value={editTaskPriority}
+                              onChange={(e) => setEditTaskPriority(e.target.value as "low" | "medium" | "high")}
+                              className="w-full px-3 py-2 rounded-lg bg-[#0F0F0F] border border-white/5 text-xs text-gray-300 focus:outline-none focus:border-[#FF6A00]/50"
+                            >
+                              <option value="low">Low</option>
+                              <option value="medium">Medium</option>
+                              <option value="high">High</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="submit"
+                            disabled={saving}
+                            className="flex-1 py-2 rounded-xl bg-[#FF6A00] text-black text-xs font-bold hover:bg-[#FF8833] disabled:opacity-50 transition-colors flex items-center justify-center gap-1.5"
+                          >
+                            <Save className="w-3.5 h-3.5" />
+                            <span>{saving ? "Saving..." : "Save Changes"}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={cancelEditTask}
+                            className="py-2 px-4 rounded-xl border border-white/5 bg-white/[0.02] text-gray-400 hover:text-white text-xs font-bold transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    )}
+
                     {/* Tasks list */}
                     <div className="space-y-4">
                       <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-white/5 pb-2 pl-1">
@@ -824,12 +941,22 @@ export default function CrmDetailView({
                                   </div>
                                 </div>
                               </div>
-                              <button
-                                onClick={() => handleDeleteTask(task.id, task.title)}
-                                className="p-2 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                              <div className="flex items-center gap-1 shrink-0">
+                                {!isCompleted && (
+                                  <button
+                                    onClick={() => startEditTask(task)}
+                                    className="p-2 rounded-lg text-gray-600 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleDeleteTask(task.id, task.title)}
+                                  className="p-2 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
                             </div>
                           );
                         })
