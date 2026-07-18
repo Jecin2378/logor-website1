@@ -341,9 +341,8 @@ export default function WhatsAppWidget() {
     setHasNewMessage(false);
   };
 
-  const bookingWhatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-    `Hi Logor! I just booked a free consultation via the AI chatbot.\n\nName: ${bookingData.fullName}\nBusiness: ${bookingData.businessName}\nServices: ${bookingData.servicesInterested.join(", ") || "General Inquiry"}`
-  )}`;
+  // bookingWhatsappUrl is set dynamically in handleBookingSubmit on successful lead creation
+  // and provided as a clickable button in the success message
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
