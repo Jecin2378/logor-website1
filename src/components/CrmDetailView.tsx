@@ -17,7 +17,10 @@ import {
   Mail,
   MapPin,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Edit2,
+  Save,
+  GripVertical
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";

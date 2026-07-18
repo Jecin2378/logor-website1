@@ -21,7 +21,6 @@ import {
   Calendar,
   AlertCircle,
   TrendingUp,
-  Layers,
   X,
   Users,
   CheckCircle2,
@@ -29,11 +28,10 @@ import {
   Activity,
   Bell,
   CheckSquare,
-  ArrowRightLeft,
   Check,
   Clock,
-  ExternalLink,
-  Plus
+  ArrowRightLeft,
+  ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";

@@ -21,7 +21,9 @@ BEGIN
       url := 'https://ytrfiteoqbxpwctkvfuj.supabase.co/functions/v1/send-consultation-email',
       headers := jsonb_build_object(
         'Content-Type', 'application/json',
-        -- Authorized call using the standard publishable/anon key
+        -- IMPORTANT: Replace with your Supabase anon key from project settings
+        -- For production: Get this from your Supabase dashboard > Settings > API
+        -- This key is safe to expose client-side (RLS protects the database)
         'apikey', 'sb_publishable_2Q40n8GiQ0jw_sa5GO9UaA_OO2iMwQM'
       ),
       body := jsonb_build_object(

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, X, User, Briefcase, Phone, Check, Sparkles } from "lucide-react";
+import { Send, X, Check, Sparkles } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 // Structured Knowledge Base for Logor's Services
