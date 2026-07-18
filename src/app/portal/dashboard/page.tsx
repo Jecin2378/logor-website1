@@ -21,6 +21,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedBackground from "@/components/AnimatedBackground";
+import { PortalDashboardSkeleton } from "@/components/LoadingSkeleton";
 import type { LeadDbRow, CustomerDbRow, CrmTask, CrmFile, CrmNote } from "@/types/lead";
 
 export default function ClientPortalDashboard() {
@@ -150,11 +151,17 @@ export default function ClientPortalDashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0A0A0A] relative text-white">
+      <div className="min-h-screen bg-[#0A0A0A] relative text-white">
         <AnimatedBackground />
-        <div className="relative z-10 flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#FF6A00]"></div>
-          <p className="text-gray-400 text-sm font-medium">Loading your portal dashboard...</p>
+        <div className="relative z-10">
+          {/* Skeleton header */}
+          <header className="sticky top-0 z-30 py-4 glass-navbar border-b border-white/5">
+            <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+              <div className="h-8 w-24 bg-white/[0.03] rounded-lg animate-pulse" />
+              <div className="h-8 w-20 bg-white/[0.03] rounded-xl animate-pulse" />
+            </div>
+          </header>
+          <PortalDashboardSkeleton />
         </div>
       </div>
     );

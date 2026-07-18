@@ -38,6 +38,7 @@ import { createClient } from "@/utils/supabase/client";
 import { LeadDbRow, CustomerDbRow, CrmTask, CrmActivity } from "@/types/lead";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import CrmDetailView from "@/components/CrmDetailView";
+import { DashboardSkeleton } from "@/components/LoadingSkeleton";
 
 const servicesList = [
   "NFC Business Cards",
@@ -556,11 +557,23 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0A0A0A] relative text-white">
+      <div className="flex min-h-screen bg-[#0A0A0A] relative text-white">
         <AnimatedBackground />
-        <div className="relative z-10 flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#FF6A00]"></div>
-          <p className="text-gray-400 text-sm font-medium">Entering secure area...</p>
+        <div className="flex flex-col lg:flex-row flex-grow relative z-10">
+          {/* Skeleton sidebar */}
+          <aside className="w-full lg:w-64 bg-charcoal-deep border-b lg:border-b-0 lg:border-r border-white/5 p-6 shrink-0">
+            <div className="space-y-8">
+              <div className="h-7 w-24 bg-white/[0.03] rounded-lg animate-pulse" />
+              <div className="space-y-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="h-12 bg-white/[0.03] rounded-xl animate-pulse" />
+                ))}
+              </div>
+            </div>
+          </aside>
+          <div className="flex-grow">
+            <DashboardSkeleton />
+          </div>
         </div>
       </div>
     );
