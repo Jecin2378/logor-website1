@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Sparkles, CheckCircle2, TrendingUp, Users, Star } from "lucide-react";
 import { motion, useMotionValue, useTransform, useSpring, useAnimationFrame, useInView } from "framer-motion";
 
 export default function Hero() {
@@ -10,7 +10,6 @@ export default function Hero() {
   const [category, setCategory] = useState("TAP TO CONNECT");
   const [cardColor, setCardColor] = useState<"black" | "gold" | "blue" | "orange" | "white" | "ops">("ops");
   const [isHovering, setIsHovering] = useState(false);
-
   // Scroll gating: pause 3D animation loop when section is scrolled out of viewport
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { amount: 0.05 });
@@ -190,8 +189,11 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] text-white"
           >
-            One Tap.<br />
-            <span className="orange-text-gradient">Grow Your Business.</span>
+            One Tap.
+            <br />
+            Grow Your
+            <br />
+            <span className="orange-text-gradient">Business.</span>
           </motion.h1>
 
           <motion.p
@@ -202,6 +204,42 @@ export default function Hero() {
           >
             Helping Indian local businesses become digital in one day. Boost your Google reviews, save contact numbers instantly, and drive repeat customers through NFC, QR Codes, and smart engagement.
           </motion.p>
+
+          {/* Social Proof: Live counter with trust metrics */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="flex flex-wrap gap-6 pt-1"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <TrendingUp className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div>
+                <p className="animate-count-shimmer text-lg font-extrabold">250+</p>
+                <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Businesses Transformed</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                <Star className="w-4 h-4 text-blue-400" />
+              </div>
+              <div>
+                <p className="animate-count-shimmer text-lg font-extrabold">4.9★</p>
+                <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Avg. Client Rating</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                <Users className="w-4 h-4 text-purple-400" />
+              </div>
+              <div>
+                <p className="animate-count-shimmer text-lg font-extrabold">50+</p>
+                <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Cities Across India</p>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Quick value indicators */}
           <motion.div

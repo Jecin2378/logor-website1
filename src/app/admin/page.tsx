@@ -211,12 +211,13 @@ export default function AdminLogin() {
 
         {/* Back Link */}
         <div className="text-center mt-6">
-          <a
-            href="/"
+          <button
+            type="button"
+            onClick={() => router.push("/")}
             className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
           >
             ← Back to main site
-          </a>
+          </button>
         </div>
       </div>
     </div>

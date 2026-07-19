@@ -22,7 +22,7 @@ const faqs = [
     answer: "Yes! The custom QR codes and NFC chips direct to your digital business profile, which stays active 24/7 online. There are no recurring subscription fees for basic listings.",
   },
   {
-    question: "How does the Google Review booster work?",
+    question: "How does the One-tap Google Review Link work?",
     answer: "When customers tap your card or scan your counter QR, a prominent 'Review Us on Google' button appears on their screen. Clicking it redirects them straight to your Google Review input page with the rating window already popped open, helping them leave a review in 5 seconds.",
   },
   {

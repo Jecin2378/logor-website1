@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { createClient } = require('@supabase/supabase-js');
 
 // Parse .env.local manually to avoid installing dotenv
@@ -69,7 +71,7 @@ async function seed() {
       address: "Chennai, Tamil Nadu, India",
       gbp_available: "yes",
       website_available: "yes",
-      services_interested: ["NFC Business Card", "Review Booster"],
+      services_interested: ["NFC Business Card", "One-tap Review Link"],
       message: "Lead created via operations seed script for portal access.",
       status: "converted"
     })
@@ -132,7 +134,7 @@ async function seed() {
       lead_id: lead.id,
       customer_id: null,
       title: "Activate Google Review Redirect Link",
-      description: "Link your Google Business Profile URL for Review Booster setup.",
+      description: "Link your Google Business Profile URL for One-tap Review Link setup.",
       status: "pending",
       priority: "medium",
       due_date: new Date(Date.now() + 86400000 * 5).toISOString()

@@ -16,6 +16,7 @@ export default function CursorGlow() {
     // Detect if touch/coarse pointer device
     const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
     if (coarsePointer) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsTouch(true);
       return;
     }

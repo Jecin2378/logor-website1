@@ -17,7 +17,7 @@ interface WebhookPayload {
     message: string | null;
     created_at: string;
   };
-  old_record: any;
+  old_record: Record<string, unknown>;
 }
 
 const corsHeaders = {

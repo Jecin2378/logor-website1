@@ -4,8 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   X,
   FileText,
-  CheckCircle,
-  Clock,
   Plus,
   Trash2,
   Calendar,
@@ -17,10 +15,8 @@ import {
   Mail,
   MapPin,
   Loader2,
-  AlertCircle,
   Edit2,
-  Save,
-  GripVertical
+  Save
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
@@ -39,7 +35,7 @@ export default function CrmDetailView({
   onClose,
   entityType,
   entityId,
-  onUpdate
+  onUpdate: _onUpdate
 }: CrmDetailViewProps) {
   const supabase = createClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,27 +69,8 @@ export default function CrmDetailView({
   // File upload state
   const [uploadingFile, setUploadingFile] = useState(false);
 
-  // Load all detail data on open/entity change
-  useEffect(() => {
-    if (!isOpen || !entityId) return;
-
-    // Reset fields
-    setActiveTab("details");
-    setLeadData(null);
-    setCustomerData(null);
-    setNotes([]);
-    setTasks([]);
-    setFiles([]);
-    setActivities([]);
-    setNewNote("");
-    setTaskTitle("");
-    setTaskDue("");
-    setTaskPriority("medium");
-
-    fetchEntityDetails();
-  }, [isOpen, entityId, entityType]);
-
-  const fetchEntityDetails = async () => {
+  // Fetch entity details - defined before useEffect to avoid hoisting issues
+  const fetchEntityDetails = React.useCallback(async () => {
     if (!entityId) return;
     setLoading(true);
 
@@ -118,25 +95,39 @@ export default function CrmDetailView({
       }
 
       // 2. Fetch Notes, Tasks, Files, Activities
-      const leadFilter = entityType === "lead" ? entityId : null;
-      const customerFilter = entityType === "customer" ? entityId : null;
-
-      // Helper queries
       const notesQuery = supabase
         .from("crm_notes")
         .select("*")
         .order("created_at", { ascending: false });
+
+      if (entityType === "lead") {
+        notesQuery.eq("lead_id", entityId);
+      } else {
+        notesQuery.eq("customer_id", entityId);
+      }
       
       const tasksQuery = supabase
         .from("crm_tasks")
         .select("*")
-        .order("status", { ascending: true }) // Put completed tasks at the bottom
+        .order("status", { ascending: true })
         .order("due_date", { ascending: true });
+
+      if (entityType === "lead") {
+        tasksQuery.eq("lead_id", entityId);
+      } else {
+        tasksQuery.eq("customer_id", entityId);
+      }
 
       const filesQuery = supabase
         .from("crm_files")
         .select("*")
         .order("created_at", { ascending: false });
+
+      if (entityType === "lead") {
+        filesQuery.eq("lead_id", entityId);
+      } else {
+        filesQuery.eq("customer_id", entityId);
+      }
 
       const activitiesQuery = supabase
         .from("crm_activities")
@@ -144,14 +135,8 @@ export default function CrmDetailView({
         .order("created_at", { ascending: false });
 
       if (entityType === "lead") {
-        notesQuery.eq("lead_id", entityId);
-        tasksQuery.eq("lead_id", entityId);
-        filesQuery.eq("lead_id", entityId);
         activitiesQuery.eq("lead_id", entityId);
       } else {
-        notesQuery.eq("customer_id", entityId);
-        tasksQuery.eq("customer_id", entityId);
-        filesQuery.eq("customer_id", entityId);
         activitiesQuery.eq("customer_id", entityId);
       }
 
@@ -172,12 +157,33 @@ export default function CrmDetailView({
       setFiles(resFiles.data || []);
       setActivities(resActs.data || []);
 
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Error loading CRM details:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [entityId, entityType, supabase]);
+
+  // Load all detail data on open/entity change
+  useEffect(() => {
+    if (!isOpen || !entityId) return;
+
+    // Reset fields
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setActiveTab("details");
+    setLeadData(null);
+    setCustomerData(null);
+    setNotes([]);
+    setTasks([]);
+    setFiles([]);
+    setActivities([]);
+    setNewNote("");
+    setTaskTitle("");
+    setTaskDue("");
+    setTaskPriority("medium");
+
+    fetchEntityDetails();
+  }, [isOpen, entityId, entityType, fetchEntityDetails]);
 
   // Helper log activity
   const logCrmActivity = async (type: string, desc: string) => {
@@ -230,8 +236,8 @@ export default function CrmDetailView({
       setNotes(prev => [data as CrmNote, ...prev]);
       setNewNote("");
       await logCrmActivity("note_added", `Note added: "${noteObj.content.substring(0, 40)}..."`);
-    } catch (err: any) {
-      alert("Failed to save note: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to save note: " + (err instanceof Error ? err.message : "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -267,8 +273,8 @@ export default function CrmDetailView({
       setTaskPriority("medium");
 
       await logCrmActivity("task_created", `Task scheduled: "${taskObj.title}" due ${taskDue || "no due date"}`);
-    } catch (err: any) {
-      alert("Failed to save task: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to save task: " + (err instanceof Error ? err.message : "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -293,8 +299,8 @@ export default function CrmDetailView({
         ? `Task completed: "${task.title}"`
         : `Task set back to pending: "${task.title}"`;
       await logCrmActivity("task_completed", logMsg);
-    } catch (err: any) {
-      alert("Failed to update task: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to update task: " + (err instanceof Error ? err.message : "Unknown error"));
     }
   };
 
@@ -334,8 +340,8 @@ export default function CrmDetailView({
 
       await logCrmActivity("task_updated", `Task updated: "${editingTask.title}" → "${editTaskTitle.trim()}"`);
       setEditingTask(null);
-    } catch (err: any) {
-      alert("Failed to update task: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to update task: " + (err instanceof Error ? err.message : "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -358,8 +364,8 @@ export default function CrmDetailView({
 
       setTasks(prev => prev.filter(t => t.id !== taskId));
       await logCrmActivity("task_deleted", `Task deleted: "${title}"`);
-    } catch (err: any) {
-      alert("Failed to delete task: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to delete task: " + (err instanceof Error ? err.message : "Unknown error"));
     }
   };
 
@@ -371,10 +377,11 @@ export default function CrmDetailView({
     setUploadingFile(true);
 
     try {
-      const path = `${entityType}/${entityId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+      const timestamp = new Date().getTime();
+      const path = `${entityType}/${entityId}/${timestamp}_${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
 
       // 1. Upload file binary
-      const { data: uploadRes, error: uploadErr } = await supabase.storage
+      const { error: uploadErr } = await supabase.storage
         .from("crm-files")
         .upload(path, file, { cacheControl: "3600", upsert: false });
 
@@ -402,9 +409,9 @@ export default function CrmDetailView({
 
       setFiles(prev => [fileData as CrmFile, ...prev]);
       await logCrmActivity("file_uploaded", `Uploaded document: "${file.name}"`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Storage upload error:", err);
-      alert("Storage upload failed: " + err.message);
+      alert("Storage upload failed: " + (err instanceof Error ? err.message : "Unknown error"));
     } finally {
       setUploadingFile(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -422,8 +429,8 @@ export default function CrmDetailView({
       if (data?.signedUrl) {
         window.open(data.signedUrl, "_blank");
       }
-    } catch (err: any) {
-      alert("Failed to retrieve file download link: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to retrieve file download link: " + (err instanceof Error ? err.message : "Unknown error"));
     }
   };
 
@@ -447,8 +454,8 @@ export default function CrmDetailView({
 
       setFiles(prev => prev.filter(f => f.id !== file.id));
       await logCrmActivity("file_deleted", `Deleted document: "${file.file_name}"`);
-    } catch (err: any) {
-      alert("Failed to delete file: " + err.message);
+    } catch (err: unknown) {
+      alert("Failed to delete file: " + (err instanceof Error ? err.message : "Unknown error"));
     }
   };
 
@@ -684,7 +691,7 @@ export default function CrmDetailView({
                           Form Questionnaire Comments
                         </h4>
                         <p className="text-gray-300 text-xs leading-relaxed bg-white/[0.01] p-3 rounded-xl border border-white/5 font-mono italic">
-                          "{leadData.message}"
+                          &ldquo;{leadData.message}&rdquo;
                         </p>
                       </div>
                     )}
@@ -695,7 +702,7 @@ export default function CrmDetailView({
                           Customer Scope / Setup Notes
                         </h4>
                         <p className="text-gray-300 text-xs leading-relaxed bg-white/[0.01] p-3 rounded-xl border border-white/5 font-mono italic">
-                          "{customerData.notes}"
+                          &ldquo;{customerData.notes}&rdquo;
                         </p>
                       </div>
                     )}

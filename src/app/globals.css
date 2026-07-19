@@ -13,19 +13,49 @@
 :root {
   --background: #0A0A0A;
   --foreground: #F5F5F5;
+  --color-primary: #FF6A00;
+  --color-primary-hover: #FF8833;
+  --color-primary-muted: rgba(255, 106, 0, 0.1);
+  --color-gold: #D5C625;
+  --color-gold-hover: #E0D035;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --transition-fast: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ========================================
+   PREMIUM DESIGN SYSTEM
+   ======================================== */
+
+/* Priority-based transitions - only interactive elements get hover transitions */
+button,
+a[href],
+input,
+textarea,
+select,
+[role="button"] {
+  transition: all var(--transition-base);
 }
 
 /* ========================================
    ENHANCED GLASSMORPHISM SYSTEM
    ======================================== */
 
-/* Primary glass panel - frosted translucent background */
 .glass-panel {
   background: rgba(16, 16, 16, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -42,7 +72,7 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-/* Glass card with luxury hover effects */
+/* Premium glass card with shimmer sweep */
 .glass-card {
   background: rgba(18, 18, 18, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -84,7 +114,7 @@ body {
   transform: translateY(-6px);
 }
 
-/* Orange-tinted glass card */
+/* Premium orange-tinted glass card */
 .glass-card-orange {
   background: rgba(255, 106, 0, 0.04);
   border: 1px solid rgba(255, 106, 0, 0.12);
@@ -126,7 +156,7 @@ body {
   transform: translateY(-6px);
 }
 
-/* Glass navbar - ultra subtle */
+/* Premium glass navbar */
 .glass-navbar {
   background: rgba(10, 10, 10, 0.6);
   backdrop-filter: blur(12px) saturate(1.6);
@@ -135,7 +165,7 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Glass input fields */
+/* Premium glass input fields */
 .glass-input {
   background: rgba(15, 15, 15, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -179,6 +209,22 @@ body {
   background: linear-gradient(135deg, #FFD700 0%, #FF6A00 50%, #FF4500 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* ========================================
+   FOCUS RING SYSTEM
+   ======================================== */
+*:focus-visible {
+  outline: 2px solid rgba(255, 106, 0, 0.5);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   SELECTION COLOR
+   ======================================== */
+::selection {
+  background: rgba(255, 106, 0, 0.3);
+  color: #FFF;
 }
 
 /* ========================================
@@ -256,40 +302,13 @@ body {
 }
 
 /* ========================================
-   LIGHTWEIGHT HOVER HIGHLIGHT SYSTEM
+   FOCUS STYLING
    ======================================== */
-
-/* Transitions for small interactive elements only (not large layout panels) */
-button,
-input,
-textarea,
-select,
-.glass-card,
-[role="button"],
-a {
-  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Hover effect for small interactive elements */
-button:hover,
-.glass-card:hover,
-[role="button"]:hover,
-a[class*="border"]:hover,
-a[class*="bg-"]:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 12px 28px -8px rgba(255, 106, 0, 0.3),
-              0 0 15px -3px rgba(255, 106, 0, 0.15);
-  border-color: rgba(255, 106, 0, 0.4);
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: rgba(213, 198, 37, 0.6) !important;
-  box-shadow: 0 0 15px rgba(255, 106, 0, 0.15) !important;
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  border-color: rgba(255, 106, 0, 0.6);
+  box-shadow: 0 0 15px rgba(255, 106, 0, 0.15);
   outline: none;
 }
 
@@ -369,4 +388,111 @@ select:focus {
 }
 .logor-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 106, 0, 0.5);
+}
+
+/* ========================================
+   PSYCHOLOGY-DRIVEN MICRO-INTERACTIONS
+   ======================================== */
+
+/* Urgency pulse — used on limited-time badges or scarcity indicators */
+@keyframes urgencyPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: 0.1;
+  }
+}
+.animate-urgency-pulse {
+  animation: urgencyPulse 2s ease-in-out infinite;
+}
+
+/* Live notification toast slide-in (FOMO social proof) */
+@keyframes toastSlideIn {
+  0% {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  5% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  85% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+}
+.animate-toast {
+  animation: toastSlideIn 5s ease-in-out infinite;
+}
+
+/* Number count-up shimmer for FOMO counters */
+@keyframes countShimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-count-shimmer {
+  background: linear-gradient(90deg, #FF6A00 25%, #FFB200 50%, #FF6A00 75%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: countShimmer 3s linear infinite;
+}
+
+/* Attention-grabbing CTA bounce for primary actions */
+@keyframes ctaBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+.animate-cta-bounce {
+  animation: ctaBounce 2s ease-in-out infinite;
+}
+
+/* Trust badge shimmer on hover (reciprocity trigger) */
+@keyframes trustShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.trust-badge {
+  position: relative;
+  overflow: hidden;
+}
+.trust-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 25%, rgba(255, 106, 0, 0.03) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: trustShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Zeigarnik progress bar animation (incomplete = tension) */
+@keyframes progressFill {
+  0% { width: 0%; }
+  100% { width: var(--progress-target, 100%); }
+}
+.animate-progress-fill {
+  animation: progressFill 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Decoy highlight pulse for pricing comparison */
+@keyframes decoyPulse {
+  0%, 100% {
+    border-color: rgba(255, 106, 0, 0.2);
+    box-shadow: 0 0 20px rgba(255, 106, 0, 0.05);
+  }
+  50% {
+    border-color: rgba(255, 106, 0, 0.6);
+    box-shadow: 0 0 35px rgba(255, 106, 0, 0.15);
+  }
+}
+.animate-decoy-pulse {
+  animation: decoyPulse 3s ease-in-out infinite;
 }

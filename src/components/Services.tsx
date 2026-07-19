@@ -137,7 +137,7 @@ const services = [
       "Review monitoring dashboard integration",
       "Professional response templates for positive and negative feedback",
       "Google Maps ratings analysis & reputation reports",
-      "Review acquisition booster campaigns"
+      "Automated review request campaigns"
     ]
   },
   {

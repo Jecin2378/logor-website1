@@ -20,7 +20,7 @@ import { motion } from "framer-motion";
 const industries = [
   { name: "Retail Shops", icon: ShoppingBag, useCase: "Display custom QR code on billing counters. Customers tap or scan to share location and reviews." },
   { name: "Restaurants", icon: Utensils, useCase: "NFC menu stands on tables. Customers scan custom QR codes to view the digital menu and write quick feedback." },
-  { name: "Tea Shops", icon: Coffee, useCase: "Fast-tap review booster at the register. Helps build hundreds of local Google ratings easily." },
+  { name: "Tea Shops", icon: Coffee, useCase: "Fast-tap review link at the register. Helps build hundreds of local Google ratings easily." },
   { name: "Salons", icon: Scissors, useCase: "Direct WhatsApp booking and digital portfolio integration. Customers save business contacts with one tap." },
   { name: "Mechanics", icon: Wrench, useCase: "High-visibility Google Business profile setup to bring nearby vehicle-breakdown leads straight to your shop." },
   { name: "Mobile Repair", icon: Smartphone, useCase: "NFC cards to share service prices, contact numbers, and drive review building upon device delivery." },

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { Lock, Mail, ArrowRight, AlertTriangle, User, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -156,7 +157,7 @@ export default function ClientPortalAuth() {
       <div className="w-full max-w-md relative z-10">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-8">
-          <a href="/" className="mb-3 hover:scale-105 transition-transform duration-300">
+          <Link href="/" className="mb-3 hover:scale-105 transition-transform duration-300">
             <Image
               src="/logor-logo.png"
               alt="Logor Logo"
@@ -165,7 +166,7 @@ export default function ClientPortalAuth() {
               className="h-10 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,106,0,0.3)]"
               priority
             />
-          </a>
+          </Link>
           <span className="text-xs font-bold tracking-widest text-[#FF6A00] uppercase">
             Client Portal
           </span>
@@ -367,12 +368,13 @@ export default function ClientPortalAuth() {
 
         {/* Back Link */}
         <div className="text-center mt-6">
-          <a
-            href="/"
+          <button
+            type="button"
+            onClick={() => router.push("/")}
             className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
           >
             ← Back to main site
-          </a>
+          </button>
         </div>
       </div>
     </div>

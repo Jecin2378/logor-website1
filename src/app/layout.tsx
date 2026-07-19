@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   keywords: "NFC business cards, local business digital transformation, Google Reviews India, QR Code menus, WhatsApp Business Puducherry, local SEO, Logor",
   openGraph: {
     title: "Logor | One Tap. Unlimited Business Opportunities.",
-    description: "Become digital in 24 hours with NFC business cards + Google Review Booster + custom landing pages.",
+    description: "Become digital in 24 hours with NFC business cards + One-tap Google Review Link + custom landing pages.",
     url: "https://logorbusiness.pages.dev/",
     siteName: "Logor",
     locale: "en_IN",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Logor | Digital in 24 Hours",
-    description: "NFC business cards + Google Review Booster + custom landing pages for Indian local businesses."
+    description: "NFC business cards + One-tap Google Review Link + custom landing pages for Indian local businesses."
   },
   robots: {
     index: true,

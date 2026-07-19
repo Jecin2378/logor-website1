@@ -17,7 +17,7 @@ const KNOWLEDGE_BASE = [
   },
   {
     keywords: ["price", "pricing", "cost", "how much", "rate", "plan", "package", "fees"],
-    response: "We offer two transparent pricing plans:\n\n1. **Starter Plan (₹999 Onetime)**: Premium NFC Card, Digital Business Profile, one-tap contact saving, WhatsApp chat button, social links, and profile QR code.\n\n2. **Business Plan (₹1,999 Onetime - Most Popular)**: Everything in Starter + Google Business Profile Setup, Custom Landing Page, Google Review Booster, Google Maps Citations, and full WhatsApp Business integration."
+    response: "We offer two transparent pricing plans:\n\n1. **Starter Plan (₹1,299 Onetime)**: Premium NFC Card, Digital Business Profile, one-tap contact saving, WhatsApp chat button, social links, and profile QR code.\n\n2. **Business Plan (₹3,999 Onetime - Most Popular)**: Everything in Starter + Google Business Profile Setup, Custom Landing Page, One-tap Google Review Link, Google Maps Citations, and full WhatsApp Business integration."
   },
   {
     keywords: ["setup", "time", "how long", "duration", "days", "turnaround", "shipping"],
@@ -25,7 +25,7 @@ const KNOWLEDGE_BASE = [
   },
   {
     keywords: ["review", "google review", "booster", "rating", "google page"],
-    response: "Our Google Review Booster makes getting reviews seamless. When customers tap your NFC card or scan your counter QR, a prominent 'Review Us on Google' button appears. Clicking it redirects them straight to your Google Review input page with the 5-star rating window already popped open, helping them leave a review in under 5 seconds!"
+    response: "Our One-tap Google Review Link makes getting reviews seamless. When customers tap your NFC card or scan your counter QR, a prominent 'Review Us on Google' button appears. Clicking it redirects them straight to your Google Review input page with the 5-star rating window already popped open, helping them leave a review in under 5 seconds!"
   },
   {
     keywords: ["whatsapp", "integration", "whatsapp integration", "chat button", "wa.me"],
@@ -33,7 +33,7 @@ const KNOWLEDGE_BASE = [
   },
   {
     keywords: ["services", "what you do", "offer", "features", "solutions"],
-    response: "We help local businesses in India become digital in 24 hours. Our services include:\n- Premium NFC Business Cards\n- Custom Mobile-First Landing Pages\n- Google Business Profile (GBP) optimization\n- Google Review Booster (10x review growth)\n- WhatsApp Business Integration\n- Local SEO & Google Maps citations\n\nWould you like to book a free consultation to discuss further?"
+    response: "We help local businesses in India become digital in 24 hours. Our services include:\n- Premium NFC Business Cards\n- Custom Mobile-First Landing Pages\n- Google Business Profile (GBP) optimization\n- One-tap Google Review Link (10x review growth)\n- WhatsApp Business Integration\n- Local SEO & Google Maps citations\n\nWould you like to book a free consultation to discuss further?"
   },
   {
     keywords: ["contact", "phone", "number", "email", "support", "address", "location", "office"],
@@ -86,7 +86,7 @@ function getAIResponse(userText: string): string {
     return bestMatch.response;
   }
   
-  return "I'm not sure I fully understand that question. 😅 I can answer anything about our NFC business cards, pricing, Google Review booster, or setup timeline.\n\nAlternatively, you can book a free consultation or chat with our team directly on WhatsApp!";
+  return "I'm not sure I fully understand that question. 😅 I can answer anything about our NFC business cards, pricing, the One-tap Google Review Link, or setup timeline.\n\nAlternatively, you can book a free consultation or chat with our team directly on WhatsApp!";
 }
 
 interface Message {
@@ -108,7 +108,7 @@ const servicesList = [
   "Digital Landing Pages",
   "Google Business Profile Setup",
   "QR Code Solutions",
-  "Google Review Booster",
+  "One-tap Google Review Link",
   "WhatsApp Business Integration"
 ];
 
@@ -141,11 +141,12 @@ export default function WhatsAppWidget() {
 
   // Initial welcome message
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMessages([
       {
         id: "welcome",
         sender: "ai",
-        text: "Hi! I am the Logor AI Assistant. 🟧 I help local businesses in India set up NFC cards, Google Review boosters, and custom landing pages. Ask me anything, or let's book a free consultation!",
+        text: "Hi! I am the Logor AI Assistant. 🟧 I help local businesses in India set up NFC cards, One-tap Google Review Links, and custom landing pages. Ask me anything, or let's book a free consultation!",
         timestamp: new Date()
       }
     ]);
@@ -168,9 +169,12 @@ export default function WhatsAppWidget() {
     }
   }, [isOpen]);
 
+let _msgId = 0;
+
   const addMessage = (sender: "ai" | "user", text: string) => {
+    _msgId++;
     const newMessage: Message = {
-      id: Math.random().toString(36).substring(2, 9),
+      id: `msg-${_msgId}`,
       sender,
       text,
       timestamp: new Date()
@@ -295,18 +299,7 @@ export default function WhatsAppWidget() {
     }, 600);
   };
 
-  const resetChat = () => {
-    setBookingState("idle");
-    setBookingData({ fullName: "", businessName: "", phone: "", servicesInterested: [] });
-    setMessages([
-      {
-        id: "welcome-reset",
-        sender: "ai",
-        text: "Hi again! Let's start fresh. How can I help you digitize your business? Ask any question or click below to book a consultation.",
-        timestamp: new Date()
-      }
-    ]);
-  };
+
 
   const handleSuggestionClick = (suggestion: string) => {
     if (suggestion === "Book Consultation 📅") {
@@ -328,7 +321,7 @@ export default function WhatsAppWidget() {
   // Suggestion pills shown in idle state
   const suggestionPills = [
     "What is an NFC card? 💳",
-    "How does Review Booster work? 📈",
+    "How does the Review Link work? 📈",
     "Pricing & Plans 💰",
     "QR Codes 📲",
     "Who is this for? 🏢",
@@ -538,7 +531,7 @@ export default function WhatsAppWidget() {
                         ? "Enter business name..."
                         : bookingState === "phone"
                         ? "Enter phone/WhatsApp number..."
-                        : "Ask about NFC, pricing, review booster..."
+                        : "Ask about NFC, pricing, review link..."
                     }
                     className="w-full pl-4 pr-11 py-3 bg-white/[0.03] border border-white/10 focus:border-[#FF6A00]/50 rounded-full text-xs text-white placeholder-gray-500 focus:outline-none transition-all duration-300"
                   />

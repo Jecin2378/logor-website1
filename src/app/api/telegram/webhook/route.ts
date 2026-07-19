@@ -6,7 +6,7 @@ const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET;
 
 // Helper to send messages or answer callbacks to Telegram API
-async function callTelegram(method: string, body: any) {
+async function callTelegram(method: string, body: Record<string, unknown>) {
   try {
     const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`, {
       method: 'POST',
@@ -59,7 +59,7 @@ const faqs = [
     a: "Yes! The custom QR codes and NFC chips direct to your digital business profile, which stays active 24/7 online. There are no recurring subscription fees for basic listings."
   },
   {
-    q: "5. How does the Review Booster work?",
+    q: "5. How does the Review Link work?",
     a: "When customers tap your card or scan your counter QR, a prominent 'Review Us on Google' button appears on their screen. Clicking it redirects them straight to your Google Review input page with the rating window already popped open, helping them leave a review in 5 seconds."
   },
   {
@@ -83,7 +83,7 @@ const faqMenuKeyboard = {
       { text: "4. Will links work forever?", callback_data: "visitor_faq_3" }
     ],
     [
-      { text: "5. How does Review Booster work?", callback_data: "visitor_faq_4" },
+      { text: "5. How does Review Link work?", callback_data: "visitor_faq_4" },
       { text: "6. What is WhatsApp Integration?", callback_data: "visitor_faq_5" }
     ],
     [
@@ -110,24 +110,26 @@ const bookMenuKeyboard = {
   ]
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getBotSession(supabase: any, chatId: string) {
-  const { data, error } = await supabase
+  const { data: sessionData, error: sessionError } = await supabase
     .from('bot_sessions')
     .select('*')
     .eq('chat_id', chatId)
     .single();
 
-  if (error || !data) {
-    const { data: newData, error: newError } = await supabase
+  if (sessionError || !sessionData) {
+    const { data: newData } = await supabase
       .from('bot_sessions')
       .insert({ chat_id: chatId, state: 'idle' })
       .select()
       .single();
     return newData || { chat_id: chatId, state: 'idle' };
   }
-  return data;
+  return sessionData;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function updateBotSession(supabase: any, chatId: string, state: string) {
   await supabase
     .from('bot_sessions')
@@ -390,7 +392,7 @@ export async function POST(req: Request) {
               .eq('lead_id', leadId)
               .single();
 
-            const noteData: any = { content: text };
+            const noteData: { content: string; lead_id?: string; customer_id?: string } = { content: text };
             if (customer) {
               noteData.customer_id = customer.id;
             } else {
@@ -505,8 +507,9 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
     console.error('Telegram Webhook error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }

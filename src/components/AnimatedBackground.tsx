@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface Particle {
   id: number;
@@ -31,9 +31,7 @@ const StarSparkle = ({ size, color }: { size: number; color: string }) => (
 );
 
 export default function AnimatedBackground() {
-  const [particles, setParticles] = useState<Particle[]>([]);
-
-  useEffect(() => {
+  const [particles] = useState<Particle[]>(() => {
     const colors = [
       "#FF6A00", // Brand Orange
       "#D5C625", // Luminous Gold
@@ -43,7 +41,7 @@ export default function AnimatedBackground() {
     ];
 
     // Reduced count from 45 to 20 for scrolling performance boost
-    const generated: Particle[] = Array.from({ length: 20 }).map((_, i) => {
+    return Array.from({ length: 20 }).map((_, i) => {
       const isStar = Math.random() > 0.7; // 30% are 4-pointed stars
       const size = isStar ? Math.random() * 3 + 2.5 : Math.random() * 2.5 + 1; // 1px to 5.5px
       return {
@@ -59,9 +57,7 @@ export default function AnimatedBackground() {
         isStar,
       };
     });
-
-    setParticles(generated);
-  }, []);
+  });
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">

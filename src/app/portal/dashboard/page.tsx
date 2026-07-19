@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import {
   LogOut,
@@ -15,10 +16,9 @@ import {
   CheckCircle2,
   Calendar,
   MessageSquare,
-  FileDown,
-  ExternalLink
+  FileDown
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import { PortalDashboardSkeleton } from "@/components/LoadingSkeleton";
@@ -29,7 +29,7 @@ export default function ClientPortalDashboard() {
   const supabase = useMemo(() => createClient(), []);
 
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ email?: string | null } | null>(null);
   
   // Client business data
   const [leadRecord, setLeadRecord] = useState<LeadDbRow | null>(null);
@@ -114,7 +114,7 @@ export default function ClientPortalDashboard() {
           
           if (noteData) setNotes(noteData);
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Portal loading error:", err);
       } finally {
         setLoading(false);
@@ -130,6 +130,7 @@ export default function ClientPortalDashboard() {
   };
 
   const handleDownloadFile = async (file: CrmFile) => {
+    if (!file || !file.file_path) return;
     setDownloadingFileId(file.id);
     try {
       const { data, error } = await supabase.storage
@@ -141,7 +142,7 @@ export default function ClientPortalDashboard() {
       if (data?.signedUrl) {
         window.open(data.signedUrl, "_blank");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Error generating file download URL:", err);
       alert("Failed to download file. Please contact support.");
     } finally {
@@ -197,7 +198,7 @@ export default function ClientPortalDashboard() {
             <div className="space-y-2">
               <h2 className="text-xl font-bold text-white">Account Under Review</h2>
               <p className="text-sm text-gray-400 leading-relaxed">
-                We couldn't find a pending lead or customer profile associated with your email:
+                We could not find a pending lead or customer profile associated with your email:
               </p>
               <p className="text-sm font-bold text-[#FF6A00] font-mono break-all">{user?.email}</p>
             </div>
@@ -252,7 +253,7 @@ export default function ClientPortalDashboard() {
       {/* Header */}
       <header className="sticky top-0 z-30 py-4 glass-navbar border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <a href="/" className="hover:opacity-90 transition-opacity">
+          <Link href="/" className="hover:opacity-90 transition-opacity">
             <Image
               src="/logor-logo.png"
               alt="Logor Logo"
@@ -261,7 +262,7 @@ export default function ClientPortalDashboard() {
               className="h-8 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,106,0,0.2)]"
               priority
             />
-          </a>
+          </Link>
 
           <div className="flex items-center gap-4">
             <div className="hidden sm:block text-right">
